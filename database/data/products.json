@@ -1,0 +1,56 @@
+[
+    {
+      "name": "BMW E46 Front Brake Pads",
+      "categoryId": 1,
+      "models": "E46",
+      "description": "High-quality front brake pads for BMW E46 models.",
+      "price": 25000,
+      "pictureUrl": "./img/e46-brake-pads.jpg",
+      "quantity": 15
+    },
+    {
+      "name": "BMW F30 Air Filter",
+      "categoryId": 2,
+      "models": "F30",
+      "description": "Efficient air filter for improved engine performance.",
+      "price": 12000,
+      "pictureUrl": "./img/f30-air-filter.jpg",
+      "quantity": 20
+    },
+    {
+      "name": "BMW G20 Spark Plugs",
+      "categoryId": 2,
+      "models": "G20",
+      "description": "Set of 4 high-performance spark plugs.",
+      "price": 30000,
+      "pictureUrl": "./img/g20-spark-plugs.jpg",
+      "quantity": 10
+    },
+    {
+      "name": "BMW E90 Rear Shock Absorbers",
+      "categoryId": 1,
+      "models": "E90",
+      "description": "Durable rear shock absorbers for BMW E90 models.",
+      "price": 55000,
+      "pictureUrl": "./img/e90-shocks.jpg",
+      "quantity": 8
+    },
+    {
+      "name": "BMW X5 F15 Oil Filter",
+      "categoryId": 3,
+      "models": "F15",
+      "description": "Premium oil filter for BMW X5 F15 engines.",
+      "price": 18000,
+      "pictureUrl": "./img/x5-oil-filter.jpg",
+      "quantity": 25
+    },
+    {
+      "name": "BMW E39 Headlight Assembly",
+      "categoryId": 1,
+      "models": "E39",
+      "description": "Complete headlight assembly for BMW E39 models.",
+      "price": 90000,
+      "pictureUrl": "./img/e39-headlight.jpg",
+      "quantity": 5
+    }
+  ]
