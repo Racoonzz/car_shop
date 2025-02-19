@@ -44,6 +44,11 @@ color: white !important;
 }
 
 
+.sidebarCloser {
+  position: fixed;   /* Fix it to the bottom of the screen */
+  bottom: 0;         /* Position it at the bottom */
+}
+
 .sidebar.close{
   width: 78px;
   background-position: 100px;
@@ -76,8 +81,8 @@ color: white !important;
   pointer-events: none;
 }
 .sidebar .nav-links{
-  height: 100%;
-  padding: 30px 0 100px 0;
+  height: 50%;
+  padding: 30px 0 50px 0;
   overflow: auto;
 }
 .sidebar.close .nav-links{
@@ -102,6 +107,13 @@ color: white !important;
 .sidebar.close .nav-links li .icon-link{
   display: block
 }
+
+#sidebarCloser{
+  
+    margin-top: auto; /* Pushes the sidebarCloser to the bottom */
+
+}
+
 .sidebar .nav-links li i{
   height: 50px;
   min-width: 78px;

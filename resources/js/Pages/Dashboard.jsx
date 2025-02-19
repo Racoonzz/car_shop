@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
+import "../../../resources/css/style.css";
 
 export default function Dashboard({ auth }) {
 
@@ -32,17 +33,27 @@ export default function Dashboard({ auth }) {
                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" >
                                 Termékek betöltése
                             </button>
-                            {products.length > 0 && (
-                                <ul className="mt-6">
-                                    {products.map((product) => (
-                                        <li key={product.id} className="border-b py-2">
-                                            <strong>{product.category.name} - {product.name}</strong> - {product.price} Ft
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            <div id="home" className="products">
+                                {products.length > 0 && (
+                                    products.map((product) => (
+                                        <div key={product.id} className="listing">
+                                            <h2>{product.name}</h2>
+                                            <p>{product.description}</p>
+                                            <img src={product.pictureUrl} alt={product.name} />
+                                            <h3>{product.price} Ft</h3>
+                                            {product.quantity !== 0 ? (
+                                                <a id={product.id} className="addToCart">Kosárba</a>
+                                            ) : (
+                                                <span>Nem rendelhető</span>
+                                            )}
 
-                           
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+
+
                         </div>
                     </div>
                 </div>

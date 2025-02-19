@@ -1,11 +1,20 @@
 import "../../../resources/css/style.css";
 import bmwm from "../../../resources/img/bmwm.png";
 import React, { useState } from "react";
+import ShowProducts from "./ShowProducts";
 
 export default function Home() {
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [products, setProducts] = useState([]);
 
+
+    const fetchProducts = () => {
+        axios
+            .get('/products') // Backend route hívása
+            .then((response) => setProducts(response.data))
+            .catch((error) => console.error('Hiba történt a lekérdezés során:', error));
+    };
     return (
         <>
             <div className="wrapper">
@@ -86,7 +95,7 @@ export default function Home() {
 
 
                         <li>
-                            <div className="icon-link" id="Explore">
+                            <div className="icon-link" id="Explore" onClick={fetchProducts}>
                                 <a className="link_name" href="#" id="exploreLink">
                                     <i className='bx bx-compass'></i>
                                     <span className="link_name">Products</span>
@@ -99,24 +108,28 @@ export default function Home() {
                             </ul>
                         </li>
 
-
-
-
-
-
-                    </ul>
-                </div>
-                <section className="home-section">
-                    <div className="home-content"  onClick={()=>setSidebarOpen((prev)=>!prev)} >
-                        <i className='bx bx-menu' ></i>
-                        <span className="text" id="text"  >Home</span>
+                    <div className="sidebarCloser">
+                        <li >
+                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen((prev) => !prev)}  >
+                                <a className="link_name" href="#" id="openSidebar">
+                                <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
+                                    <span className="link_name"></span>
+                                </a>
+                            </div>
+                            
+                        </li>
                     </div>
-                    <section id="home" className=""></section>
+                    
+                    </ul>
+
+                    
 
 
-
-                </section>
+                </div>
+               
+            <ShowProducts products={products}/>
             </div>
+            
         </>
     );
 
