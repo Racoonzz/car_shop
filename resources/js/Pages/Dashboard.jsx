@@ -52,6 +52,12 @@ export default function Dashboard({ auth }) {
                                 )}
                             </div>
 
+                            {auth.user.role === 'admin' && (
+                                <button  className="text-blue-500">
+                                    Admin Dashboard megnyitása
+                                </button>
+                            )}
+
 
 
                         </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -13,6 +14,10 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+Route::middleware(['admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
 });
 
 Route::get('/dashboard', function () {
