@@ -5,7 +5,7 @@
       "models": "E46",
       "description": "High-quality front brake pads for BMW E46 models.",
       "price": 25000,
-      "pictureUrl": "./img/e46-brake-pads.jpg",
+      "pictureUrl": "img/e46_brake_pads.webp",
       "quantity": 15
     },
     {
@@ -14,7 +14,7 @@
       "models": "F30",
       "description": "Efficient air filter for improved engine performance.",
       "price": 12000,
-      "pictureUrl": "./img/f30-air-filter.jpg",
+      "pictureUrl": "img/bmw_f30.webp",
       "quantity": 0
     },
     {
@@ -41,7 +41,7 @@
       "models": "F15",
       "description": "Premium oil filter for BMW X5 F15 engines.",
       "price": 18000,
-      "pictureUrl": "./img/x5-oil-filter.jpg",
+      "pictureUrl": "img/x5-oil-filter.webp",
       "quantity": 25
     },
     {

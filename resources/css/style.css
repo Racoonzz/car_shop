@@ -18,12 +18,13 @@ color: white !important;
 }
 
 .sidebar {
+  position: fixed;
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
   min-height: 100vh;
-  width: 350px;
-  max-width: 350px;
+  width: 300px;
+  max-width: 300px;
   background-color: black !important; /* Default background color */
   z-index: 100;
   transition: all 0.5s ease;
@@ -50,7 +51,7 @@ color: white !important;
 }
 
 .sidebar.close{
-  width: 78px;
+  max-width: 78px;
   background-position: 100px;
 }
 .sidebar .logo-details{
@@ -252,18 +253,19 @@ color: white !important;
 .sidebar .profile-details .job{
   font-size: 12px;
 }
-.home-section{
+.home-section {
   position: relative;
   background: #E4E9F7;
   min-height: 100%;
   left: 0px;
-  width: calc(100% - 260px);
+  width: calc(100% - 260px); /* Width when sidebar is open */
   transition: all 0.5s ease;
 }
-.sidebar.close ~ .home-section{
-  left: 0px;
-  width: calc(100% - 78px);
+
+.sidebar.close ~ .home-section {
+  width: calc(100% - 78px); /* Width when sidebar is collapsed */
 }
+
 .home-section .home-content{
   height: 60px;
   display: flex;
@@ -314,7 +316,8 @@ margin-left: 2px;
   padding: 20px;
   background: rgb(228, 233, 247); /* Light background for better contrast */
   border-radius: 8px; /* Rounded corners for a softer look */
-  max-width: calc-size(content); /* Limit width for larger screens */
+  width: 100%;
+  transition: transform 0.3s; /* Smooth transition for zoom effect */
 }
 
 .products h2 {
@@ -338,13 +341,20 @@ margin-left: 2px;
   border-radius: 5px; /* Rounded corners for images */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   transition: transform 0.3s; /* Smooth transition for zoom effect */
+  margin: auto; 
+  margin-bottom: 10px;
 }
 
 .products img:hover {
   transform: scale(1.1); /* Zoom effect on hover */
 }
 
+.products h3 {
+  margin-bottom: 10px;
+}
+
 .products a {
+  margin-top: 15px;
   background: #ccc; /* Neutral background for buttons */
   padding: 0.5rem 1rem; /* Adjusted padding for buttons */
   margin-top: 20px;
