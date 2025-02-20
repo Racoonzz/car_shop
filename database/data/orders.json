@@ -1,0 +1,22 @@
+[
+    {
+        "userId": 1,
+        "orderDate": "2021-01-01",
+        "finalised": true
+    },
+    {
+        "userId": 1,
+        "orderDate": "2012-04-11",
+        "finalised": true
+    },
+    {
+        "userId": 1,
+        "orderDate": "2025-01-20",
+        "finalised": false
+    },
+    {
+        "userId": 1,
+        "orderDate": "2025-02-02",
+        "finalised": false
+    }
+]

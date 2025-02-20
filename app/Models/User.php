@@ -18,8 +18,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'id',
+        'streetNumber',
+        'floorDoor',
+        'city',
+        'postalCode',
+        'firstName',
+        'lastName',
         'email',
+        'phoneNumber',
+        'name',
         'password',
     ];
 
