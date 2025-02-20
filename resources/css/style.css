@@ -18,12 +18,13 @@ color: white !important;
 }
 
 .sidebar {
+  position: fixed;
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
   min-height: 100vh;
-  width: 350px;
-  max-width: 350px;
+  width: 300px;
+  max-width: 300px;
   background-color: black !important; /* Default background color */
   z-index: 100;
   transition: all 0.5s ease;
@@ -252,18 +253,19 @@ color: white !important;
 .sidebar .profile-details .job{
   font-size: 12px;
 }
-.home-section{
+.home-section {
   position: relative;
   background: #E4E9F7;
   min-height: 100%;
   left: 0px;
-  width: calc(100% - 260px);
+  width: calc(100% - 260px); /* Width when sidebar is open */
   transition: all 0.5s ease;
 }
-.sidebar.close ~ .home-section{
-  left: 0px;
-  width: calc(100% - 78px);
+
+.sidebar.close ~ .home-section {
+  width: calc(100% - 78px); /* Width when sidebar is collapsed */
 }
+
 .home-section .home-content{
   height: 60px;
   display: flex;

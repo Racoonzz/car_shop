@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ShowProducts from "./ShowProducts";
 import Modal from './Modal';  
 
-export default function Home() {
+export default function Home( auth) {
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [products, setProducts] = useState([]);
