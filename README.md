@@ -58,10 +58,10 @@ Modern webáruház autóalkatrészek és kiegészítők értékesítéséhez, La
 MIT License
 
 ## 👨‍💻 Fejlesztők
-[Kolozsvári Krisztina Janka]  [GitHub]:  (https://github.com/kolozsvari) 
+[Kolozsvári Krisztina Janka](https://github.com/kolozsvari) 
 
 ## 👨‍💻 Fejlesztők
-[Pap László]  [GitHub]:  (https://github.com/Racoonzz) 
+[Pap László](https://github.com/Racoonzz) 
 
 ---
 © 2025 Car Shop. Minden jog fenntartva.
