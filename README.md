@@ -57,10 +57,10 @@ Modern webáruház autóalkatrészek és kiegészítők értékesítéséhez, La
 ## 📄 Licensz
 MIT License
 
-## 👨‍💻 Fejlesztők
+## 👨‍💻 Fejlesztő
 [Kolozsvári Krisztina Janka](https://github.com/kolozsvari) 
 
-## 👨‍💻 Fejlesztők
+## 👨‍💻 Fejlesztő
 [Pap László](https://github.com/Racoonzz) 
 
 ---
