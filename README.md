@@ -59,7 +59,7 @@ MIT License
 
 ## 👨‍💻 Fejlesztők
 [GitHub] (https://github.com/kolozsvari) [Kolozsvári Krisztina Janka]
-[GitHub] ()[Pap László]
+[GitHub] (https://github.com/Racoonzz)[Pap László]
 
 ---
 © 2025 Car Shop. Minden jog fenntartva.
