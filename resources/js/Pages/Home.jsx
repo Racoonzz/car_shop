@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ShowProducts from "./ShowProducts";
 import Modal from './Modal';  
 
-export default function Home( auth) {
+export default function Home( {auth} ) {
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [products, setProducts] = useState([]);
@@ -44,7 +44,7 @@ export default function Home( auth) {
                             <div className="icon-link" id="User" onClick={handleOpenModal}>
                                 <a href="#">
                                     <i className='bx bx-user-circle'></i>
-                                    <span className="link_name">User</span>
+                                    <span className="link_name">{auth.user ? auth.user.name : "jelentkezz be" }</span>
                                 </a>
                             </div>
                             <ul className="sub-menu blank">
