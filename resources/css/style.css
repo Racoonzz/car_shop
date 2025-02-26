@@ -8,9 +8,17 @@
   font-family: 'Poppins', sans-serif;
 }
 .wrapper{
-  display: flex;
-  min-height: 100%;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 100vh;
+  transition: all 0.5s ease;
 }
+
+.wrapper:has(>.sidebar.close){
+  grid-template-columns: 78px 1fr;
+  transition: all 0.5s ease;
+}
+
 .logo-details{
 height: 50px !important;
 color: white !important;
@@ -18,13 +26,12 @@ color: white !important;
 }
 
 .sidebar {
-  position: fixed;
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
-  min-height: 100vh;
-  width: 300px;
-  max-width: 300px;
+  height: 100vh;
+  /* width: 300px;
+  max-width: 300px; */
   background-color: black !important; /* Default background color */
   z-index: 100;
   transition: all 0.5s ease;
@@ -258,7 +265,7 @@ color: white !important;
   background: #E4E9F7;
   min-height: 100%;
   left: 0px;
-  width: calc(100% - 260px); /* Width when sidebar is open */
+  /* width: calc(100% - 260px); Width when sidebar is open */
   transition: all 0.5s ease;
 }
 
@@ -317,6 +324,7 @@ margin-left: 2px;
   background: rgb(228, 233, 247); /* Light background for better contrast */
   border-radius: 8px; /* Rounded corners for a softer look */
   width: 100%;
+  overflow-y: auto; /* Enable vertical scrolling if needed */
   transition: transform 0.3s; /* Smooth transition for zoom effect */
 }
 

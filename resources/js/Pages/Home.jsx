@@ -27,6 +27,8 @@ export default function Home( {auth} ) {
     const handleCloseModal = () => {
         setIsModalVisible(false);
     };
+    <meta name="csrf-token" content="{{ csrf_token()}" />
+
 
     return (
         <>
@@ -41,7 +43,7 @@ export default function Home( {auth} ) {
 
                     <ul className="nav-links">
                         <li>
-                            <div className="icon-link" id="User" onClick={handleOpenModal}>
+                            <div className="icon-link" id="User" onClick={handleOpenModal} >
                                 <a href="#">
                                     <i className='bx bx-user-circle'></i>
                                     <span className="link_name">{auth.user ? auth.user.name : "jelentkezz be" }</span>
@@ -136,11 +138,11 @@ export default function Home( {auth} ) {
 
                 </div>
 
-                {/* ShowProducts Component */}
+                
                 <ShowProducts products={products} />
 
-                {/* Modal Component */}
-                {isModalVisible && <Modal onClose={handleCloseModal} />}
+            
+                {isModalVisible && <Modal onClose={handleCloseModal} auth={auth} />}
             </div>
         </>
     );
