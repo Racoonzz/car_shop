@@ -5,7 +5,7 @@ Modern webáruház autóalkatrészek és kiegészítők értékesítéséhez, La
 
 ## 🛠 Technológiák
 - **Backend:** Laravel 10
-- **Frontend:** Inertia.js, Vue.js
+- **Frontend:** Inertia.js, React
 - **Adatbázis:** sqlite
 - **Autentikáció:** Laravel Breeze
 
