@@ -13,6 +13,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
@@ -33,7 +34,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/', function () { return Inertia::render('Home'); })->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products')->middleware('auth');
+Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middleware('auth');
 Route::get('/ordersDetails', [OrderDetailController::class, 'index'])->name('ordersDetails')->middleware('auth');
 require __DIR__.'/auth.php';
