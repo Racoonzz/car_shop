@@ -89,3 +89,5 @@ export default function Modal({ onClose, auth, onLogout }) {
         </div>
     );
 }
+
+// halo
