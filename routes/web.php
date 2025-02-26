@@ -13,11 +13,12 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout'),
+       
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
