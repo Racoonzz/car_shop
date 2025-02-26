@@ -3,12 +3,15 @@ import bmwm from "../../../resources/img/bmwm.png";
 import React, { useState } from "react";
 import ShowProducts from "./ShowProducts";
 import Modal from './Modal';  
+import Cart from './Cart';
 
 export default function Home( {auth} ) {
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [products, setProducts] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);  // Modal state
+    
+    const [isCartVisible, setIsCartVisible] = useState(false);  // Cart state
 
     // Function to fetch products
     const fetchProducts = () => {
@@ -55,7 +58,7 @@ export default function Home( {auth} ) {
                         </li>
 
                         <li>
-                            <div className="icon-link" id="Cart">
+                            <div className="icon-link" id="Cart" onClick={handleOpenCart}>
                                 <a href="#">
                                     <i className='bx bx-cart'></i>
                                     <span className="link_name">Cart</span>
@@ -143,6 +146,8 @@ export default function Home( {auth} ) {
 
             
                 {isModalVisible && <Modal onClose={handleCloseModal} auth={auth} />}
+
+                {isModalVisible && <Modal onClose={handleCloseCart} auth={auth} />}
             </div>
         </>
     );
