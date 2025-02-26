@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Modal({ onClose }) {
+export default function Modal({ onClose, auth }) {
     return (
         <div
             className="fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50"
@@ -15,7 +15,7 @@ export default function Modal({ onClose }) {
                     {/* Buttons inside the modal */}
                     <div className="flex flex-col gap-4">
                         <button
-                            onClick={() => window.location.href = "http://car_shop.test/login"}
+                            onClick={() => window.location.href = "/login"}
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
                             Bejelentkezés
@@ -27,7 +27,7 @@ export default function Modal({ onClose }) {
                             Profil megtekintése
                         </button>
                         <button
-                            onClick={() => window.location.href = "http://car_shop.test/register"} // register button
+                            onClick={() => window.location.href = "/register"} // register button
                             className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
                         >
                             Még nincsen fiókod? Regisztrálj!
