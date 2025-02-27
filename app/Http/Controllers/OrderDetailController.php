@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OrderDetailController extends Controller
 {
@@ -22,15 +23,31 @@ class OrderDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|exists:orders,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $orderDetail = OrderDetail::create([
+            'orderId' => $request->order_id,
+            'productId' => $request->product_id,
+            'quantity' => $request->quantity,
+        ]);
+    
+        return response()->json($orderDetail, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(orderDetail $orderDetails)
+    public function show($id)
     {
-        //
+      
     }
 
     /**
@@ -38,14 +55,35 @@ class OrderDetailController extends Controller
      */
     public function update(Request $request, orderDetail $orderDetails)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|exists:orders,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $orderDetails->update([
+            'orderId' => $request->order_id,
+            'productId' => $request->product_id,
+            'quantity' => $request->quantity,
+        ]);
+
+        return response()->json($orderDetails, 200); 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(orderDetail $orderDetails)
+    public function destroy($id)
     {
-        //
+        $orderDetail = OrderDetail::find($id);
+        if (!$orderDetail) {
+            return response()->json(['message' => 'orderdetail not found'], 404);
+        }
+        $orderDetail->delete();
+        return response()->json(['message' => 'orderdetail deleted successfully'], 200);
     }
 }

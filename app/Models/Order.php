@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
    public $timestamps = false;
-    protected $fillable = ['user_id', 'orderDate', 'finalised'];
+    // protected $fillable = ['user_id', 'orderDate', 'finalised'];
+    protected $guarded = [];
     public function user()
     {
-        return $this->belongsTo(User::class, 'userId');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function orderDetails()
     {
