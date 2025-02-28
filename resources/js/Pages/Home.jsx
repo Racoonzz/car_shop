@@ -24,6 +24,7 @@ export default function Home({ auth }) {
     // Function to open modal
     const handleOpenModal = () => {
         setIsModalVisible(true);
+        setIsCartVisible(false);  // Close cart modal when profile modal opens
     };
 
     // Function to close modal
@@ -34,6 +35,7 @@ export default function Home({ auth }) {
     // Function to toggle the cart modal visibility
     const toggleCart = () => {
         setIsCartVisible(!isCartVisible);
+        setIsModalVisible(false);  // Close profile modal when cart modal opens
     };
 
     // Function to fetch cart data
@@ -54,7 +56,7 @@ export default function Home({ auth }) {
 
             if (existingProductIndex >= 0) {
                 // If product exists, increase its quantity
-                const updatedCart = cart.map(product => ({ ...product, id: String(product.id) }));
+                const updatedCart = [...prevCart];
 
                 updatedCart[existingProductIndex].quantity += 1;
                 return updatedCart;

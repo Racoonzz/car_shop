@@ -1,93 +1,83 @@
 import { Link } from '@inertiajs/react';
 import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function Modal({ onClose, auth, onLogout }) {
-    const logout = async () => {
-        try {
-            const csrfToken = document.head.querySelector('meta[name="csrf-token"]')?.content;
-
-            const response = await fetch('/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken, // Include the CSRF token
-                },
-                credentials: 'same-origin',  // Ensure cookies are sent with the request
-            });
-
-            if (response.ok) {
-                // Successful logout, redirect to login page
-                window.location.href = '/login';
-            } else {
-                // If the server returns an error, show it
-                console.error('Logout failed');
-                alert('Logout failed. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error during logout:', error);
-            alert('Error during logout');
-        }
-    };
-
+export default function Modal({ onClose, auth }) {
     return (
-        <div
+        <motion.div
             className="fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50"
-            onClick={onClose}  // Close modal when clicking outside
+            onClick={onClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
         >
-            <div
-                className="bg-white p-6 rounded-md shadow-lg w-96 relative"
-                onClick={(e) => e.stopPropagation()} // Prevent clicking inside modal from closing it
+            <motion.div
+                className="bg-white p-6 rounded-2xl shadow-xl w-96 relative"
+                onClick={(e) => e.stopPropagation()}
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                transition={{ duration: 0.3 }}
             >
                 <h3 className="text-xl font-semibold mb-4 text-center">Felhasználói felület</h3>
                 <div className="mb-6">
-                    {/* Buttons inside the modal */}
                     <div className="flex flex-col gap-4 items-center">
                         {auth && auth.user ? (
-                            <div className="flex flex-col items-center gap-4">
-                                <span>Welcome, {auth.user.name}</span>
-                                <button
-                                    onClick={() => window.location.href = "/profile"}
-                                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                            <motion.div 
+                                className="flex flex-col items-center gap-4"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <span className="text-gray-700">Welcome, {auth.user.name}</span>
+                                <Link
+                                    href="/profile"
+                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
                                 >
                                     Profil megtekintése
-                                </button>
-                                <Link href={route('logout')}
-                                method="post"
-                                    
-                                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                </Link>
+                                <Link
+                                    href={route('logout')}
+                                    method="post"
+                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                                 >
                                     Kijelentkezés
                                 </Link>
-                            </div>
+                            </motion.div>
                         ) : (
-                            <div className="flex flex-col items-center gap-4">
-                                <button
-                                    onClick={() => window.location.href = "/login"}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            <motion.div 
+                                className="flex flex-col items-center gap-4"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <Link
+                                    href="/login"
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                                 >
                                     Bejelentkezés
-                                </button>
-                                <button
-                                    onClick={() => window.location.href = "/register"}
-                                    className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                                </Link>
+                                <Link
+                                    href="/register"
+                                    className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition"
                                 >
                                     Még nincsen fiókod? Regisztrálj!
-                                </button>
-                            </div>
+                                </Link>
+                            </motion.div>
                         )}
                     </div>
                 </div>
                 <div className="flex justify-end gap-4">
-                    <button
-                        onClick={onClose}  // Close the modal
-                        className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                    <motion.button
+                        onClick={onClose}  
+                        className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
                         Bezárás
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
-
-// halo
