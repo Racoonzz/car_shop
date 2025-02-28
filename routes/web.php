@@ -19,11 +19,11 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
-});
+// Route::middleware(['admin'])->group(function () {
+//     Route::get('/admin', [AdminController::class, 'index']);
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -40,5 +40,6 @@ Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middleware('auth');
 Route::get('/ordersDetails', [OrderDetailController::class, 'index'])->name('ordersDetails')->middleware('auth');
 Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order')->middleware('auth');
 
 require __DIR__.'/auth.php';
