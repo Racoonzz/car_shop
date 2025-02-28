@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-export default function ShowProducts({ products }) {
+export default function ShowProducts({ products, addToCart }) {
 
-    
+
 
     return (
         <div id="home" className="products">
@@ -14,7 +14,9 @@ export default function ShowProducts({ products }) {
                         <img src={product.pictureUrl} alt={product.name} />
                         <h3>{product.price} Ft</h3>
                         {product.quantity !== 0 ? (
-                            <a id={product.id} className="addToCart">Kosárba</a>
+                            <button onClick={() => addToCart(product)} className="addToCart">
+                                Kosárba
+                            </button>
                         ) : (
                             <span>Nem rendelhető</span>
                         )}
@@ -27,3 +29,5 @@ export default function ShowProducts({ products }) {
 
 
 }
+
+
