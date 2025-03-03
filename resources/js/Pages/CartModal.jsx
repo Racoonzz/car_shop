@@ -4,13 +4,28 @@ import { motion } from 'framer-motion';
 import CheckoutPage from './CheckoutPage';
 
 export default function CartModal({ cart, toggleCart, updateCart }) {
-  const [quantities, setQuantities] = useState(
-    cart.reduce((acc, product) => {
+  const [quantities, setQuantities] = useState(() => {
+    // Check if there's a cart saved in localStorage
+    const savedCart = JSON.parse(localStorage.getItem('cart'));
+    return savedCart ? savedCart.reduce((acc, product) => {
       acc[product.id] = product.quantity || 1;
       return acc;
-    }, {})
-  );
+    }, {}) : cart.reduce((acc, product) => {
+      acc[product.id] = product.quantity || 1;
+      return acc;
+    }, {});
+  });
+  
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
+
+  // Save the cart to localStorage whenever it changes
+  useEffect(() => {
+    const savedCart = cart.map(product => ({
+      ...product,
+      quantity: quantities[product.id] || 1,
+    }));
+    localStorage.setItem('cart', JSON.stringify(savedCart));
+  }, [cart, quantities]);
 
   useEffect(() => {
     setQuantities(
@@ -34,8 +49,9 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
       ...prev,
       [id]: value,
     }));
-    updateCart(id, value);
-  };
+    updateCart(id, value);  // Ensure that updateCart is correctly modifying the quantity in the cart
+};
+
 
   const handleRemoveItem = (id) => {
     updateCart(id, 0);
@@ -68,41 +84,50 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
 
         {cart.length > 0 ? (
           <div aria-live="polite">
-            {cart.map((product) => (
-              <motion.div 
-                key={product.id} 
-                className="cart-item mb-4 flex items-center border-b pb-4 hover:bg-gray-100 transition rounded-lg p-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <img src={product.pictureUrl} alt={product.name}
-                  className="w-16 h-16 object-cover rounded-md mr-4"
-                />
-                <div className="flex-grow">
-                  <h3 className="text-lg font-medium text-gray-700">{product.name}</h3>
-                  <p className="text-gray-500">{product.price} Ft</p>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={quantities[product.id] || 1}
-                    min="1"
-                    className="w-12 p-1 border rounded-md text-center"
-                    onChange={(e) => handleQuantityChange(product.id, e)}
-                    aria-label={`Quantity for ${product.name}`}
+            <div
+              className={`product-list ${cart.length > 3 ? 'overflow-y-auto max-h-80' : ''}`}
+              style={{
+                overflowX: 'hidden', // Prevent horizontal scrolling
+                scrollbarWidth: 'thin', // Firefox: Thin scrollbar
+                scrollbarColor: '#B1B8C2 #E2E8F0', // Firefox: Light color thumb, subtle background
+              }}
+            >
+              {cart.map((product) => (
+                <motion.div 
+                  key={product.id} 
+                  className="cart-item mb-4 flex items-center border-b pb-4 hover:bg-gray-100 transition rounded-lg p-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <img src={product.pictureUrl} alt={product.name}
+                    className="w-16 h-16 object-cover rounded-md mr-4"
                   />
-                  <button
-                    onClick={() => handleRemoveItem(product.id)}
-                    className="text-red-500 hover:text-red-700 transition duration-200"
-                    aria-label={`Remove ${product.name} from cart`}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-medium text-gray-700">{product.name}</h3>
+                    <p className="text-gray-500">{product.price} Ft</p>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      value={quantities[product.id] || 1}
+                      min="1"
+                      className="w-12 p-1 border rounded-md text-center"
+                      onChange={(e) => handleQuantityChange(product.id, e)}
+                      aria-label={`Quantity for ${product.name}`}
+                    />
+                    <button
+                      onClick={() => handleRemoveItem(product.id)}
+                      className="text-red-500 hover:text-red-700 transition duration-200"
+                      aria-label={`Remove ${product.name} from cart`}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
 
             <div className="total mt-4 text-center">
               <h3 className="text-lg font-semibold text-gray-800">Total: {calculateTotal} Ft</h3>
