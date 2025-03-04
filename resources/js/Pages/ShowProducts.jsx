@@ -17,14 +17,16 @@ export default function ShowProducts({ products, addToCart }) {
     };
 
     const handleQuantityChange = (e) => {
-        const value = Math.max(1, Math.min(e.target.value, selectedProduct.quantity)); // Ensure quantity is within stock limits
+        // Ensure the quantity is within bounds and is a number
+        const value = Math.max(1, Math.min(Number(e.target.value), selectedProduct.quantity));
         setQuantity(value);
     };
+
 
     const handleAddToCart = () => {
         if (selectedProduct && quantity > 0) {
             addToCart({ ...selectedProduct, quantity });
-            closeModal();
+
         }
     };
 
@@ -49,7 +51,11 @@ export default function ShowProducts({ products, addToCart }) {
                             <h3 className="text-lg font-semibold mb-2">{product.price} Ft</h3>
                             {product.quantity !== 0 ? (
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // Add 1 product to the cart
+                                        addToCart({ ...product, quantity: 1 });
+                                    }}
                                     className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                 >
                                     Kosárba

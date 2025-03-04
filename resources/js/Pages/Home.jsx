@@ -53,31 +53,44 @@ export default function Home({ auth }) {
     const addToCart = (product) => {
         setCart((prevCart) => {
             const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
-
+    
             if (existingProductIndex >= 0) {
-                // If product exists, increase its quantity
+                // If product exists, increase its quantity by the selected amount
                 const updatedCart = [...prevCart];
-
-                updatedCart[existingProductIndex].quantity += 1;
+                updatedCart[existingProductIndex].quantity += product.quantity;  // Increment by the selected quantity
                 return updatedCart;
             } else {
-                // If product doesn't exist, add it with a default quantity of 1
-                return [...prevCart, { ...product, quantity: 1 }];
+                // If product doesn't exist, add it with the selected quantity
+                return [...prevCart, { ...product, quantity: product.quantity }];
             }
         });
     };
+    
+    
 
-    const updateCart = (productId, quantity) => {
-        if (quantity === 0) {
-          setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
-          return;
-        }
+    const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
-          return prevCart.map((item) => 
-            item.id === productId ? { ...item, quantity } : item
-          );
+            // If quantity is 0, remove the product
+            if (quantity === 0) {
+                return prevCart.filter((item) => item.id !== productId);
+            }
+    
+            // Check if product exists in the cart
+            const existingItem = prevCart.find((item) => item.id === productId);
+    
+            if (existingItem) {
+                // If product exists, update its quantity
+                return prevCart.map((item) =>
+                    item.id === productId ? { ...item, quantity } : item
+                );
+            } else {
+                // If product doesn't exist, add it to the cart
+                return [...prevCart, { ...productData, id: productId, quantity }];
+            }
         });
-      };
+    };
+    
+      
 
     return (
         <>
