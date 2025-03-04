@@ -137,6 +137,8 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
           <p className="text-center text-gray-500">Your cart is empty!</p>
         )}
 
+        
+
         <div className="flex justify-between mt-6 gap-4">
           <button
             onClick={toggleCart}

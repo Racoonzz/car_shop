@@ -22,7 +22,7 @@ export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
   const shippingOptions = [
     { label: 'Standard (3-5 business days)', value: 'standard', price: 1000 }, // in HUF
     { label: 'Express (1-2 business days)', value: 'express', price: 2500 },  // in HUF
-    { label: 'Aznapi Szállítás', value: 'nextDay', price: 4000 },  // in HUF
+    { label: 'SameDay Delivery', value: 'nextDay', price: 4000 },  // in HUF
   ];
 
   // Payment options
@@ -210,7 +210,7 @@ export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
                 </select>
                 {!isNextDayDeliveryAvailable() && (
                   <p className="text-red-500 text-sm mt-2">
-                    Aznapi szállítás nem elérhető 14 óra után, illetve 100.000 Ft alatti rendelés esetén.
+                    SameDay szállítás nem elérhető 14 óra után, illetve 100.000 Ft alatti rendelés esetén.
                   </p>
                 )}
               </div>

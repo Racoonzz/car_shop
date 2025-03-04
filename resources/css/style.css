@@ -93,6 +93,34 @@ color: white !important;
   padding: 30px 0 50px 0;
   overflow: auto;
 }
+
+.sidebar .nav-links li .sub-menu {
+  padding: 6px 6px 14px 80px;
+  margin-top: -10px;
+  background: black;
+  display: none;
+  transition: all 0.4s ease;
+}
+
+.sidebar .nav-links li.showMenu .sub-menu {
+  display: block;
+  background: transparent;
+}
+
+.sidebar .nav-links li .sub-menu a {
+  color: #fff;
+  font-size: 15px;
+  padding: 5px 0;
+  white-space: nowrap;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-links li .sub-menu a:hover {
+  opacity: 1;
+}
+
+
 .sidebar.close .nav-links{
   overflow: visible;
 }
