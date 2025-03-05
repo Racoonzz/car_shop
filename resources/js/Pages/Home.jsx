@@ -12,6 +12,47 @@ export default function Home({ auth }) {
     const [isModalVisible, setIsModalVisible] = useState(false);  // Modal state
     const [isCartVisible, setIsCartVisible] = useState(false);  // Cart state
     const [cart, setCart] = useState([]); // Cart state
+    const [isModelsOpen, setIsModelsOpen] = useState(false); // State for dropdown visibility
+    const [models, setModels] = useState([]); // State to store model data
+    const [selectedModel, setSelectedModel] = useState('');
+
+
+    // useEffect(() => {
+    //     // Fetch the products data from the API
+    //     axios
+    //         .get('/api/products')  // Ensure this is the correct endpoint
+    //         .then((response) => {
+    //             setProducts(response.data);  // Store products data in the state
+    //         })
+    //         .catch((error) => console.error('Error fetching products:', error));
+    // }, []);
+
+
+    // Function to fetch models from the backend
+
+    useEffect(() => {
+        axios.get('/products')
+            .then(response => {
+                // Extract unique model names from the products data
+                const modelNames = [...new Set(response.data.map(product => product.models))];
+                setModels(modelNames);
+            })
+            .catch(error => {
+                console.error('Error fetching models:', error);
+            });
+    }, []);
+
+    const handleModelSelect = (model) => {
+        setSelectedModel(model);
+        setDropdownOpen(false); // Close dropdown when a model is selected
+    };
+
+
+    // Function to toggle the models dropdown
+    const toggleModelsDropdown = () => {
+        setIsModelsOpen(!isModelsOpen);
+    };
+
 
     // Function to fetch products
     const fetchProducts = () => {
@@ -24,6 +65,7 @@ export default function Home({ auth }) {
     // Function to open modal
     const handleOpenModal = () => {
         setIsModalVisible(true);
+        setIsCartVisible(false);  // Close cart modal when profile modal opens
     };
 
     // Function to close modal
@@ -34,48 +76,62 @@ export default function Home({ auth }) {
     // Function to toggle the cart modal visibility
     const toggleCart = () => {
         setIsCartVisible(!isCartVisible);
+        setIsModalVisible(false);  // Close profile modal when cart modal opens
     };
 
     // Function to fetch cart data
     const fetchCart = () => {
         axios
-            .get('/cart')  // Backend route call
-            .then((response) => setCart(response.data))
-            .catch((error) => console.error('Error fetching cart:', error));
+        // .get('/cart')  // Backend route call
+        // .then((response) => setCart(response.data))
+        // .catch((error) => console.error('Error fetching cart:', error));
     };
 
-    useEffect(() => {
-        fetchCart();
-    }, []);
+    // useEffect(() => {
+    //     fetchCart();
+    // }, []);
 
     const addToCart = (product) => {
         setCart((prevCart) => {
             const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
 
             if (existingProductIndex >= 0) {
-                // If product exists, increase its quantity
-                const updatedCart = cart.map(product => ({ ...product, id: String(product.id) }));
-
-                updatedCart[existingProductIndex].quantity += 1;
+                // If product exists, increase its quantity by the selected amount
+                const updatedCart = [...prevCart];
+                updatedCart[existingProductIndex].quantity += product.quantity;  // Increment by the selected quantity
                 return updatedCart;
             } else {
-                // If product doesn't exist, add it with a default quantity of 1
-                return [...prevCart, { ...product, quantity: 1 }];
+                // If product doesn't exist, add it with the selected quantity
+                return [...prevCart, { ...product, quantity: product.quantity }];
             }
         });
     };
 
-    const updateCart = (productId, quantity) => {
-        if (quantity === 0) {
-          setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
-          return;
-        }
+
+
+    const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
-          return prevCart.map((item) => 
-            item.id === productId ? { ...item, quantity } : item
-          );
+            // If quantity is 0, remove the product
+            if (quantity === 0) {
+                return prevCart.filter((item) => item.id !== productId);
+            }
+
+            // Check if product exists in the cart
+            const existingItem = prevCart.find((item) => item.id === productId);
+
+            if (existingItem) {
+                // If product exists, update its quantity
+                return prevCart.map((item) =>
+                    item.id === productId ? { ...item, quantity } : item
+                );
+            } else {
+                // If product doesn't exist, add it to the cart
+                return [...prevCart, { ...productData, id: productId, quantity }];
+            }
         });
-      };
+    };
+
+
 
     return (
         <>
@@ -137,22 +193,26 @@ export default function Home({ auth }) {
                             </ul>
                         </li>
 
-                        <li>
-                            <div className="icon-link" id="Models">
+                        <li className={isModelsOpen ? 'showMenu' : ''}>
+                            <div className="icon-link" id="Models" onClick={toggleModelsDropdown}>
                                 <a href="#">
                                     <i className='bx bx-car'></i>
                                     <span className="link_name">Models</span>
                                 </a>
-                                <i className='bx bxs-chevron-down arrow'></i>
+                                <i className={`bx bxs-chevron-${isModelsOpen ? 'up' : 'down'} arrow`}></i>
                             </div>
-                            <ul className="sub-menu">
-                                <li><a className="link_name" href="#">models</a></li>
-                                <li><a href="#" className="E30" id="E30">E30</a></li>
-                                <li><a href="#" className="E34" id="E34">E34</a></li>
-                                <li><a href="#" className="E36" id="E36">E36</a></li>
-                                <li><a href="#" className="E39" id="E39">E39</a></li>
-                                <li><a href="#" className="E46" id="E46">E46</a></li>
-                            </ul>
+                            {isModelsOpen && (
+                                <ul className="sub-menu">
+                                    <li><a className="link_name" href="#">Models</a></li>
+                                    {models.length > 0 ? (
+                                        models.map((model, index) => (
+                                            <li key={index}><a href="#">{model}</a></li>
+                                        ))
+                                    ) : (
+                                        <li>No models available</li>
+                                    )}
+                                </ul>
+                            )}
                         </li>
 
                         <li>
