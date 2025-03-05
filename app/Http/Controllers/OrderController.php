@@ -52,14 +52,29 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'finalised' => 'required|boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $order->update($request->all());
+        return response()->json($order);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
-        //
+        $order = Order::find($id);
+        if (!$order) {
+            return response()->json(['message' => 'order not found'], 404);
+        }
+        $order->delete();
+        return response()->json(['message' => 'order deleted successfully'], 200);
     }
 }

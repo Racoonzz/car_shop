@@ -41,5 +41,7 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middle
 Route::get('/ordersDetails', [OrderDetailController::class, 'index'])->name('ordersDetails')->middleware('auth');
 Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order')->middleware('auth');
+Route::resource('orders', OrderController::class);
+Route::resource('products', ProductController::class);
 
 require __DIR__.'/auth.php';
