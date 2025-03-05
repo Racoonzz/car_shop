@@ -160,9 +160,7 @@ color: white !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.sidebar .nav-links li.showMenu i.arrow{
-  transform: rotate(-180deg);
-}
+
 .sidebar.close .nav-links i.arrow{
   display: none;
 }
@@ -196,7 +194,7 @@ color: white !important;
   font-size: 15px;
   padding: 5px 0;
   white-space: nowrap;
-  opacity: 0.6;
+  opacity: 1;
   transition: all 0.3s ease;
 }
 .sidebar .nav-links li .sub-menu a:hover{

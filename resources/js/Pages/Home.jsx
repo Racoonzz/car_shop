@@ -6,30 +6,16 @@ import Modal from './Modal';
 import CartModal from './CartModal';
 
 export default function Home({ auth }) {
-
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [products, setProducts] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);  // Modal state
     const [isCartVisible, setIsCartVisible] = useState(false);  // Cart state
     const [cart, setCart] = useState([]); // Cart state
-    const [isModelsOpen, setIsModelsOpen] = useState(false); // State for dropdown visibility
+    const [isModelsOpen, setIsModelsOpen] = useState(false); // State for models dropdown visibility
     const [models, setModels] = useState([]); // State to store model data
-    const [selectedModel, setSelectedModel] = useState('');
-
-
-    // useEffect(() => {
-    //     // Fetch the products data from the API
-    //     axios
-    //         .get('/api/products')  // Ensure this is the correct endpoint
-    //         .then((response) => {
-    //             setProducts(response.data);  // Store products data in the state
-    //         })
-    //         .catch((error) => console.error('Error fetching products:', error));
-    // }, []);
-
+    const [isContactsOpen, setIsContactsOpen] = useState(false); // State for contacts dropdown visibility
 
     // Function to fetch models from the backend
-
     useEffect(() => {
         axios.get('/products')
             .then(response => {
@@ -41,18 +27,6 @@ export default function Home({ auth }) {
                 console.error('Error fetching models:', error);
             });
     }, []);
-
-    const handleModelSelect = (model) => {
-        setSelectedModel(model);
-        setDropdownOpen(false); // Close dropdown when a model is selected
-    };
-
-
-    // Function to toggle the models dropdown
-    const toggleModelsDropdown = () => {
-        setIsModelsOpen(!isModelsOpen);
-    };
-
 
     // Function to fetch products
     const fetchProducts = () => {
@@ -79,17 +53,7 @@ export default function Home({ auth }) {
         setIsModalVisible(false);  // Close profile modal when cart modal opens
     };
 
-    // Function to fetch cart data
-    const fetchCart = () => {
-        axios
-        // .get('/cart')  // Backend route call
-        // .then((response) => setCart(response.data))
-        // .catch((error) => console.error('Error fetching cart:', error));
-    };
-
-    // useEffect(() => {
-    //     fetchCart();
-    // }, []);
+ 
 
     const addToCart = (product) => {
         setCart((prevCart) => {
@@ -106,8 +70,6 @@ export default function Home({ auth }) {
             }
         });
     };
-
-
 
     const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
@@ -131,128 +93,114 @@ export default function Home({ auth }) {
         });
     };
 
+    // Function to toggle the models dropdown
+    const toggleModelsDropdown = () => {
+        setIsModelsOpen(!isModelsOpen);
+    };
 
+    // Function to toggle the contacts dropdown
+    const toggleContactsDropdown = () => {
+        setIsContactsOpen(!isContactsOpen);
+    };
 
     return (
-        <>
-            <div className="wrapper">
-                <div className={sidebarOpen ? "sidebar" : "sidebar close"}>
-                    <div className="">
-                        <a href="#" className="Home w-full" id="Home">
-                            <img src={bmwm} alt="" srcSet="" id="bmwm" />
-                        </a>
-                    </div>
-
-                    <ul className="nav-links">
-                        <li>
-                            <div className="icon-link" id="User" onClick={handleOpenModal}>
-                                <a href="#">
-                                    <i className='bx bx-user-circle'></i>
-                                    <span className="link_name">{auth.user ? auth.user.name : "jelentkezz be"}</span>
-                                </a>
-                            </div>
-                            <ul className="sub-menu blank">
-                                <li><a className="link_name" href="#">UserLoginRegister</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <div className="icon-link" id="Cart" onClick={toggleCart}>
-                                <a href="#">
-                                    <i className='bx bx-cart'></i>
-                                    <span className="link_name">Cart</span>
-                                </a>
-                            </div>
-                            <ul className="sub-menu blank">
-                                <li><a className="link_name" href="#">Cart</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <div className="icon-link" id="Contacts">
-                                <a href="#">
-                                    <i className='bx bx-collection'></i>
-                                    <span className="link_name">Contact</span>
-                                </a>
-                                <i className='bx bxs-chevron-down arrow'></i>
-                            </div>
-                            <ul className="sub-menu">
-                                <li><a className="link_name" href="#">Contact</a></li>
-
-                                <li>
-                                    <a href="#">email</a>
-                                </li>
-
-                                <li>
-                                    <a href="#">phone</a>
-                                </li>
-
-                                <li>
-                                    <a href="#">fax</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li className={isModelsOpen ? 'showMenu' : ''}>
-                            <div className="icon-link" id="Models" onClick={toggleModelsDropdown}>
-                                <a href="#">
-                                    <i className='bx bx-car'></i>
-                                    <span className="link_name">Models</span>
-                                </a>
-                                <i className={`bx bxs-chevron-${isModelsOpen ? 'up' : 'down'} arrow`}></i>
-                            </div>
-                            {isModelsOpen && (
-                                <ul className="sub-menu">
-                                    <li><a className="link_name" href="#">Models</a></li>
-                                    {models.length > 0 ? (
-                                        models.map((model, index) => (
-                                            <li key={index}><a href="#">{model}</a></li>
-                                        ))
-                                    ) : (
-                                        <li>No models available</li>
-                                    )}
-                                </ul>
-                            )}
-                        </li>
-
-                        <li>
-                            <div className="icon-link" id="Explore" onClick={fetchProducts}>
-                                <a className="link_name" href="#" id="exploreLink">
-                                    <i className='bx bx-compass'></i>
-                                    <span className="link_name">Products</span>
-                                </a>
-                            </div>
-                            <ul className="sub-menu blank">
-                                <li>
-                                    <a className="link_name" href="#">Products</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <div className="sidebarCloser">
-                            <li>
-                                <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen((prev) => !prev)}>
-                                    <a className="link_name" href="#" id="openSidebar">
-                                        <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
-                                        <span className="link_name"></span>
-                                    </a>
-                                </div>
-                            </li>
-                        </div>
-
-                    </ul>
-
+        <div className="wrapper">
+            <div className={sidebarOpen ? "sidebar" : "sidebar close"}>
+                <div>
+                    <a href="#" className="Home w-full" id="Home">
+                        <img src={bmwm} alt="" id="bmwm" />
+                    </a>
                 </div>
 
+                <ul className="nav-links">
+                    <li>
+                        <div className="icon-link" id="User" onClick={handleOpenModal}>
+                            <a href="#">
+                                <i className='bx bx-user-circle'></i>
+                                <span className="link_name">{auth.user ? auth.user.name : "jelentkezz be"}</span>
+                            </a>
+                        </div>
+                    </li>
 
-                <ShowProducts products={products} addToCart={addToCart} />
+                    <li>
+                        <div className="icon-link" id="Cart" onClick={toggleCart}>
+                            <a href="#">
+                                <i className='bx bx-cart'></i>
+                                <span className="link_name">Cart</span>
+                            </a>
+                        </div>
+                    </li>
 
+                    
+                    <li  className={isContactsOpen ? 'showMenu' : ''}>
+                        <div className="icon-link" id="Contacts" onClick={toggleContactsDropdown}>
+                            <a href="#">
+                                <i className='bx bx-collection'></i>
+                                <span className="link_name">Contact</span>
+                            </a>
+                            <i className={`bx bxs-chevron-${isContactsOpen ? 'up' : 'down'} arrow`}></i>
+                        </div>
+                        
+                        {isContactsOpen && (
+                            <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
+                                <li><a href="#" className="block py-1 hover:bg-gray-700">email</a></li>
+                                <li><a href="#" className="block py-1 hover:bg-gray-700">phone</a></li>
+                                <li><a href="#" className="block py-1 hover:bg-gray-700">fax</a></li>
+                            </ul>
+                        )}
+                    </li>
 
-                {isModalVisible && <Modal onClose={handleCloseModal} auth={auth} />}
+                   
+                    <li className={isModelsOpen ? 'showMenu' : ''}>
+                        <div className="icon-link" id="Models" onClick={toggleModelsDropdown}>
+                            <a href="#">
+                                <i className='bx bx-car'></i>
+                                <span className="link_name">Models</span>
+                            </a>
+                            <i className={`bx bxs-chevron-${isModelsOpen ? 'up' : 'down'} arrow`}></i>
+                        </div>
+                        
+                        {isModelsOpen && (
+                            <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
+                                <li className="text-white"><a className="link_name" href="#">Models</a></li>
+                                {models.length > 0 ? (
+                                    models.map((model, index) => (
+                                        <li key={index}><a href="#" className="block py-1 hover:bg-gray-700">{model}</a></li>
+                                    ))
+                                ) : (
+                                    <li>No models available</li>
+                                )}
+                            </ul>
+                        )}
+                    </li>
 
+                    <li>
+                        <div className="icon-link" id="Explore" onClick={fetchProducts}>
+                            <a className="link_name" href="#" id="exploreLink">
+                                <i className='bx bx-compass'></i>
+                                <span className="link_name">Products</span>
+                            </a>
+                        </div>
+                    </li>
 
-                {isCartVisible && <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} />}
+                    <div className="sidebarCloser">
+                        <li>
+                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen((prev) => !prev)}>
+                                <a className="link_name" href="#">
+                                    <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
+                                </a>
+                            </div>
+                        </li>
+                    </div>
+
+                </ul>
             </div>
-        </>
+
+            <ShowProducts products={products} addToCart={addToCart} />
+
+            {isModalVisible && <Modal onClose={handleCloseModal} auth={auth} />}
+
+            {isCartVisible && <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} />}
+        </div>
     );
 };
