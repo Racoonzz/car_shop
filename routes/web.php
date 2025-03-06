@@ -37,10 +37,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/', function () { return Inertia::render('Home'); })->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products');
+//Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middleware('auth');
 Route::get('/ordersDetails', [OrderDetailController::class, 'index'])->name('ordersDetails')->middleware('auth');
-// Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order')->middleware('auth');
+Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
 
 require __DIR__.'/auth.php';

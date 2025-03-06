@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -13,9 +14,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        {
-            return Order::with(['user', 'orderDetails.product'])->get();
-        }
+        
+        $orders =  Order::with(['user', 'orderDetails.product'])->get();
+        return Inertia::render('Orders', ['orders' => $orders]);
+        //return $orders;
     }
 
     /**

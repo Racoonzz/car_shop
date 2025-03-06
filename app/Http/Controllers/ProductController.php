@@ -23,8 +23,9 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'categoryId' => 'required|exists:categories,id',
             'description' => 'nullable|string',
+            'models' => 'required|string',
             'quantity' => 'required|integer|min:0'
         ]);
 
@@ -39,10 +40,15 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(product $product)
+    public function show($id)
     {
-        return response()->json($product->load('category'));
+        $product = Product::with('category')->find($id);
+        if (!$product) {
+            return response()->json(['message' => 'product not found'], 404);
+        }
+        return response()->json($product);
     }
+
 
     /**
      * Update the specified resource in storage.
