@@ -7,7 +7,6 @@ export default function VerifyEmail({ status }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('verification.send'));
     };
 
@@ -15,23 +14,21 @@ export default function VerifyEmail({ status }) {
         <GuestLayout>
             <Head title="Email Verification" />
 
-            <div className="mb-4 text-sm text-gray-600">
-                Thanks for signing up! Before getting started, could you verify
-                your email address by clicking on the link we just emailed to
-                you? If you didn't receive the email, we will gladly send you
-                another.
-            </div>
+            <div className="space-y-6 text-center text-gray-700">
+                <p>
+                    Thanks for signing up! Before getting started, please verify your email 
+                    address by clicking on the link we just sent. If you didn’t receive the email, 
+                    we can send you another.
+                </p>
 
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
-            )}
+                {status === 'verification-link-sent' && (
+                    <p className="text-sm font-medium text-green-600">
+                        A new verification link has been sent to your email.
+                    </p>
+                )}
 
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
+                <form onSubmit={submit} className="space-y-4">
+                    <PrimaryButton className="w-full" disabled={processing}>
                         Resend Verification Email
                     </PrimaryButton>
 
@@ -39,12 +36,12 @@ export default function VerifyEmail({ status }) {
                         href={route('logout')}
                         method="post"
                         as="button"
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="block w-full text-sm text-gray-600 underline hover:text-gray-900"
                     >
                         Log Out
                     </Link>
-                </div>
-            </form>
+                </form>
+            </div>
         </GuestLayout>
     );
 }

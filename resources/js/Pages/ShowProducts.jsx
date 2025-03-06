@@ -22,41 +22,40 @@ export default function ShowProducts({ products, addToCart }) {
         setQuantity(value);
     };
 
-
     const handleAddToCart = () => {
         if (selectedProduct && quantity > 0) {
             addToCart({ ...selectedProduct, quantity });
-
         }
     };
 
     return (
-        <div className="products text-center p-5 bg-[#e4e9f7] rounded-lg w-full overflow-y-auto transition-transform duration-300">
+        <div className="products text-center p-3 bg-[#e4e9f7] rounded-lg w-full overflow-y-auto transition-transform duration-300">
             {/* Product grid container */}
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
                 {products.length > 0 && (
                     products.map((product) => (
                         <div
                             key={product.id}
-                            className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer"
+                            className="p-2 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer"
                             onClick={() => openModal(product)}
                         >
-                            <h2 className="bg-[#333] text-[#f0f0f0] py-2 px-4 rounded-md mb-5">{product.name}</h2>
-                            <p className="font-variant-small-caps text-[#555] text-base my-2">{product.description}</p>
+                            <h2 className="bg-[#333] text-[#f0f0f0] py-2 px-4 rounded-md mb-4 text-xs sm:text-sm md:text-base lg:text-lg">
+                                {product.name}
+                            </h2>
+                            <p className="font-variant-small-caps text-[#555] text-xs sm:text-sm md:text-base lg:text-lg my-1">{product.description}</p>
                             <img
                                 src={product.pictureUrl}
                                 alt={product.name}
                                 className="w-[70%] max-w-[250px] rounded-md shadow-md transition-transform duration-300 mx-auto mb-2"
                             />
-                            <h3 className="text-lg font-semibold mb-2">{product.price} Ft</h3>
+                            <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold mb-2">{product.price} Ft</h3>
                             {product.quantity !== 0 ? (
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        // Add 1 product to the cart
                                         addToCart({ ...product, quantity: 1 });
                                     }}
-                                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                    className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                 >
                                     Kosárba
                                 </button>
@@ -74,16 +73,16 @@ export default function ShowProducts({ products, addToCart }) {
                     onClick={closeModal}
                 >
                     <div
-                        className="modal-content bg-white p-8 rounded-lg max-w-4xl w-full h-auto flex flex-col items-center gap-8 shadow-lg"
+                        className="modal-content bg-white p-6 rounded-lg max-w-4xl w-full h-auto flex flex-col items-center gap-6 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Product Name */}
-                        <h2 className="bg-[#333] text-[#f0f0f0] py-2 px-4 rounded-md mb-6 w-full text-center">
+                        <h2 className="bg-[#333] text-[#f0f0f0] py-2 px-4 rounded-md mb-4 w-full text-center text-sm sm:text-base md:text-lg lg:text-xl">
                             {selectedProduct.name}
                         </h2>
 
                         {/* Product Image and Info Section */}
-                        <div className="flex flex-col items-center gap-8 w-full">
+                        <div className="flex flex-col items-center gap-6 w-full">
                             {/* Product Image */}
                             <img
                                 src={selectedProduct.pictureUrl}
@@ -92,16 +91,16 @@ export default function ShowProducts({ products, addToCart }) {
                             />
 
                             {/* Product Details */}
-                            <div className="w-full flex flex-col items-center gap-6">
+                            <div className="w-full flex flex-col items-center gap-4">
                                 {/* Product Description */}
-                                <p className="text-base text-[#555] overflow-auto max-h-[200px]">{selectedProduct.description}</p>
+                                <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[#555] overflow-auto max-h-[200px]">{selectedProduct.description}</p>
 
                                 {/* Product Price */}
-                                <h3 className="text-lg font-semibold">{selectedProduct.price} Ft</h3>
+                                <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold">{selectedProduct.price} Ft</h3>
 
                                 {/* Quantity Picker */}
                                 <div className="flex items-center gap-4">
-                                    <label className="text-lg font-semibold" htmlFor="quantity">Quantity:</label>
+                                    <label className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold" htmlFor="quantity">Quantity:</label>
                                     <input
                                         id="quantity"
                                         type="number"

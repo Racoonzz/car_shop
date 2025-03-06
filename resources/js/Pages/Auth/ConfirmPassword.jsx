@@ -12,7 +12,6 @@ export default function ConfirmPassword() {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('password.confirm'), {
             onFinish: () => reset('password'),
         });
@@ -22,34 +21,29 @@ export default function ConfirmPassword() {
         <GuestLayout>
             <Head title="Confirm Password" />
 
-            <div className="mb-4 text-sm text-gray-600">
-                This is a secure area of the application. Please confirm your
-                password before continuing.
-            </div>
+            <div className="space-y-6 text-center text-gray-700">
+                <p>This is a secure area of the application. Please confirm your password before continuing.</p>
 
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                <form onSubmit={submit} className="space-y-4">
+                    <div>
+                        <InputLabel htmlFor="password" value="Password" />
+                        <TextInput
+                            id="password"
+                            type="password"
+                            name="password"
+                            value={data.password}
+                            className="mt-1 block w-full"
+                            isFocused={true}
+                            onChange={(e) => setData('password', e.target.value)}
+                        />
+                        <InputError message={errors.password} className="mt-2" />
+                    </div>
 
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton className="w-full" disabled={processing}>
                         Confirm
                     </PrimaryButton>
-                </div>
-            </form>
+                </form>
+            </div>
         </GuestLayout>
     );
 }

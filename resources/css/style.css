@@ -1,27 +1,28 @@
 /* Google Fonts Import Link */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-.wrapper{
+
+.wrapper {
   display: grid;
   grid-template-columns: 260px 1fr;
   height: 100vh;
   transition: all 0.5s ease;
 }
 
-.wrapper:has(>.sidebar.close){
+.wrapper:has(>.sidebar.close) {
   grid-template-columns: 78px 1fr;
   transition: all 0.5s ease;
 }
 
-.logo-details{
-height: 50px !important;
-color: white !important;
+.logo-details {
+  height: 50px !important;
+  color: white !important;
 
 }
 
@@ -32,42 +33,55 @@ color: white !important;
   height: 100vh;
   /* width: 300px;
   max-width: 300px; */
-  background-color: black !important; /* Default background color */
+  background-color: black !important;
+  /* Default background color */
   z-index: 100;
   transition: all 0.5s ease;
 }
 
+
 /* Background image only for desktop and fullscreen */
-@media (min-width: 1080px) { /* Adjust the width as needed for your definition of desktop */
+@media (min-width: 1080px) {
+
+  /* Adjust the width as needed for your definition of desktop */
   .sidebar {
-      background-image: url('../img/sidebarpic.jpg');
-      background-attachment: fixed; /* Ensures the image doesn't scroll */
-      background-size: 700px auto; /* Fixed width of 350px, height auto */
-      background-repeat: no-repeat;
-      background-position: -100px; /* Center the background image */
-      max-width: 350px; 
-      min-height: 100vh; /* Ensures the sidebar takes full height of the viewport */
-      overflow: hidden; /* Prevents overflow if the image is larger */
+    background-image: url('../img/sidebarpic.jpg');
+    background-attachment: fixed;
+    /* Ensures the image doesn't scroll */
+    background-size: 700px auto;
+    /* Fixed width of 350px, height auto */
+    background-repeat: no-repeat;
+    background-position: -100px;
+    /* Center the background image */
+    max-width: 350px;
+    min-height: 100vh;
+    /* Ensures the sidebar takes full height of the viewport */
+    overflow: hidden;
+    /* Prevents overflow if the image is larger */
   }
 }
 
 
 .sidebarCloser {
-  position: fixed;   /* Fix it to the bottom of the screen */
-  bottom: 0;         /* Position it at the bottom */
+  position: fixed;
+  /* Fix it to the bottom of the screen */
+  bottom: 0;
+  /* Position it at the bottom */
 }
 
-.sidebar.close{
+.sidebar.close {
   max-width: 78px;
   background-position: 100px;
 }
-.sidebar .logo-details{
+
+.sidebar .logo-details {
   height: 50px;
   width: 100%;
   display: flex;
   align-items: center;
 }
-.sidebar .logo-details i{
+
+.sidebar .logo-details i {
   font-size: 30px;
   color: #fff;
   height: 50px;
@@ -75,7 +89,8 @@ color: white !important;
   text-align: center;
   line-height: 50px;
 }
-.sidebar .logo-details .logo_name{
+
+.sidebar .logo-details .logo_name {
   margin-left: 5px;
   font-size: 22px;
   color: #fff;
@@ -83,13 +98,15 @@ color: white !important;
   transition: 0.3s ease;
   transition-delay: 0.1s;
 }
-.sidebar.close .logo-details .logo_name{
+
+.sidebar.close .logo-details .logo_name {
   transition-delay: 0s;
   opacity: 0;
   pointer-events: none;
 }
-.sidebar .nav-links{
-  height: 50%;
+
+.sidebar .nav-links {
+  height: 100%;
   padding: 30px 0 50px 0;
   overflow: auto;
 }
@@ -102,10 +119,7 @@ color: white !important;
   transition: all 0.4s ease;
 }
 
-.sidebar .nav-links li.showMenu .sub-menu {
-  display: block;
-  background: transparent;
-}
+
 
 .sidebar .nav-links li .sub-menu a {
   color: #fff;
@@ -121,36 +135,42 @@ color: white !important;
 }
 
 
-.sidebar.close .nav-links{
+.sidebar.close .nav-links {
   overflow: visible;
 }
-.sidebar .nav-links::-webkit-scrollbar{
+
+.sidebar .nav-links::-webkit-scrollbar {
   display: none;
 }
-.sidebar .nav-links li{
+
+.sidebar .nav-links li {
   position: relative;
   list-style: none;
   transition: all 0.4s ease;
 }
-.sidebar .nav-links li:hover{
+
+.sidebar .nav-links li:hover {
   background: #292929;
 }
-.sidebar .nav-links li .icon-link{
+
+.sidebar .nav-links li .icon-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.sidebar.close .nav-links li .icon-link{
+
+.sidebar.close .nav-links li .icon-link {
   display: block
 }
 
-#sidebarCloser{
-  
-    margin-top: auto; /* Pushes the sidebarCloser to the bottom */
+#sidebarCloser {
+
+  margin-top: auto;
+  /* Pushes the sidebarCloser to the bottom */
 
 }
 
-.sidebar .nav-links li i{
+.sidebar .nav-links li i {
   height: 50px;
   min-width: 78px;
   text-align: center;
@@ -161,35 +181,43 @@ color: white !important;
   transition: all 0.3s ease;
 }
 
-.sidebar.close .nav-links i.arrow{
+.sidebar.close .nav-links i.arrow {
   display: none;
 }
-.sidebar .nav-links li a{
+
+.sidebar .nav-links li a {
   display: flex;
   align-items: center;
   text-decoration: none;
 }
-.sidebar .nav-links li a .link_name{
+
+.sidebar .nav-links li a .link_name {
   font-size: 18px;
   font-weight: 400;
   color: #fff;
   transition: all 0.4s ease;
+  background: transparent;
 }
-.sidebar.close .nav-links li a .link_name{
+
+.sidebar.close .nav-links li a .link_name {
   opacity: 0;
   pointer-events: none;
+  background: transparent;
 }
-.sidebar .nav-links li .sub-menu{
+
+.sidebar .nav-links li .sub-menu {
   padding: 6px 6px 14px 80px;
   margin-top: -10px;
   background: black;
   display: none;
 }
-.sidebar .nav-links li.showMenu .sub-menu{
+
+.sidebar .nav-links li.showMenu .sub-menu {
   display: block;
   background: transparent;
 }
-.sidebar .nav-links li .sub-menu a{
+
+.sidebar .nav-links li .sub-menu a {
   color: #fff;
   font-size: 15px;
   padding: 5px 0;
@@ -197,10 +225,12 @@ color: white !important;
   opacity: 1;
   transition: all 0.3s ease;
 }
-.sidebar .nav-links li .sub-menu a:hover{
+
+.sidebar .nav-links li .sub-menu a:hover {
   opacity: 1;
 }
-.sidebar.close .nav-links li .sub-menu{
+
+.sidebar.close .nav-links li .sub-menu {
   position: absolute;
   left: 100%;
   top: -10px;
@@ -213,32 +243,40 @@ color: white !important;
   transition: 0s;
   background: black;
 }
-.sidebar.close .nav-links li:hover .sub-menu{
+
+.sidebar.close .nav-links li:hover .sub-menu {
   top: 0;
   opacity: 1;
   pointer-events: auto;
   transition: all 0.4s ease;
 }
-.sidebar .nav-links li .sub-menu .link_name{
+
+.sidebar .nav-links li .sub-menu .link_name {
   display: none;
+  background: transparent;
 }
-.sidebar.close .nav-links li .sub-menu .link_name{
+
+.sidebar.close .nav-links li .sub-menu .link_name {
   font-size: 18px;
   opacity: 1;
+  background: transparent;
   display: block;
 }
-.sidebar .nav-links li .sub-menu.blank{
+
+.sidebar .nav-links li .sub-menu.blank {
   opacity: 1;
   pointer-events: auto;
   padding: 3px 20px 6px 16px;
   opacity: 0;
   pointer-events: none;
 }
-.sidebar .nav-links li:hover .sub-menu.blank{
+
+.sidebar .nav-links li:hover .sub-menu.blank {
   top: 50%;
   transform: translateY(-50%);
 }
-.sidebar .profile-details{
+
+.sidebar .profile-details {
   position: fixed;
   bottom: 0;
   width: 260px;
@@ -249,17 +287,21 @@ color: white !important;
   padding: 12px 0;
   transition: all 0.5s ease;
 }
-.sidebar.close .profile-details{
+
+.sidebar.close .profile-details {
   background: none;
 }
-.sidebar.close .profile-details{
+
+.sidebar.close .profile-details {
   width: 78px;
 }
-.sidebar .profile-details .profile-content{
+
+.sidebar .profile-details .profile-content {
   display: flex;
   align-items: center;
 }
-.sidebar .profile-details img{
+
+.sidebar .profile-details img {
   height: 52px;
   width: 52px;
   object-fit: cover;
@@ -268,24 +310,29 @@ color: white !important;
   background: #292929;
   transition: all 0.5s ease;
 }
-.sidebar.close .profile-details img{
+
+.sidebar.close .profile-details img {
   padding: 10px;
 }
+
 .sidebar .profile-details .profile_name,
-.sidebar .profile-details .job{
+.sidebar .profile-details .job {
   color: #fff;
   font-size: 18px;
   font-weight: 500;
   white-space: nowrap;
 }
+
 .sidebar.close .profile-details i,
 .sidebar.close .profile-details .profile_name,
-.sidebar.close .profile-details .job{
+.sidebar.close .profile-details .job {
   display: none;
 }
-.sidebar .profile-details .job{
+
+.sidebar .profile-details .job {
   font-size: 12px;
 }
+
 .home-section {
   position: relative;
   background: #E4E9F7;
@@ -295,35 +342,47 @@ color: white !important;
   transition: all 0.5s ease;
 }
 
-.sidebar.close ~ .home-section {
-  width: calc(100% - 78px); /* Width when sidebar is collapsed */
+.sidebar.close~.home-section {
+  width: calc(100% - 78px);
+  /* Width when sidebar is collapsed */
 }
 
-.home-section .home-content{
+@media (max-width: 768px) {
+  #openSidebar {
+    display: none !important;
+  }
+}
+
+
+.home-section .home-content {
   height: 60px;
   display: flex;
   align-items: center;
 }
+
 .home-section .home-content .bx-menu,
-.home-section .home-content .text{
+.home-section .home-content .text {
   color: #11101d;
   font-size: 35px;
 }
-.home-section .home-content .bx-menu{
+
+.home-section .home-content .bx-menu {
   margin: 0 15px;
   cursor: pointer;
 }
-.home-section .home-content .text{
+
+.home-section .home-content .text {
   font-size: 26px;
   font-weight: 600;
 }
+
 @media (max-width: 400px) {
 
-  .sidebar.close.small-screen{
+  .sidebar.close.small-screen {
     width: 0;
   }
 
-  .sidebar.close.small-screen ~ .home-section{
+  .sidebar.close.small-screen~.home-section {
     width: 100%;
     left: 0;
     z-index: 100;
@@ -331,23 +390,25 @@ color: white !important;
 }
 
 
-#bmwm{
-width: 70px;
-height: 70px;
-margin-left: 2px;
+#bmwm {
+  width: 70px;
+  height: 70px;
+  margin-left: 2px;
 
 }
 
 
 :root {
-  --original-bg-color: #ccc; /* Replace with your button's original background color */
+  --original-bg-color: #ccc;
+  /* Replace with your button's original background color */
 }
 
 
 
 .listing {
   padding-bottom: 20px;
-  background-color: #f9f9f9; /* Consistent background */
+  background-color: #f9f9f9;
+  /* Consistent background */
 }
 
 /* Add these at the end of your CSS file */
@@ -356,7 +417,7 @@ margin-left: 2px;
   margin: 20px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cart-content {
@@ -526,16 +587,22 @@ margin-left: 2px;
 
 @keyframes flash {
   0% {
-      background-color: var(--original-bg-color); /* Use a CSS variable for the original background */
-      transform: scale(1);
+    background-color: var(--original-bg-color);
+    /* Use a CSS variable for the original background */
+    transform: scale(1);
   }
+
   50% {
-      background-color: #bbc; /* Light gray for the flash */
-      transform: scale(1.05); /* Slightly enlarge */
+    background-color: #bbc;
+    /* Light gray for the flash */
+    transform: scale(1.05);
+    /* Slightly enlarge */
   }
+
   100% {
-      background-color: var(--original-bg-color); /* Return to the original background */
-      transform: scale(1);
+    background-color: var(--original-bg-color);
+    /* Return to the original background */
+    transform: scale(1);
   }
 }
 
