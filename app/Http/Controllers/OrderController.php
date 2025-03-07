@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -25,16 +29,47 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'user_id' => 'required|exists:users,id',
-            'finalised' => 'required'
+        // $validator = Validator::make($request->all(),[
+        //     'user_id' => 'required|exists:users,id',
+        //     'finalised' => 'required'
+        // ]);
+        // if ($validator->fails()){
+        //     return response()->json($validator->errors(), 400);
+        // };
+        // $order = Order::create($request->all());
+        // return response()->json($order, 201);
+
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.productId' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
-        if ($validator->fails()){
-            return response()->json($validator->errors(), 400);
-        };
-        $order = Order::create($request->all());
-        return response()->json($order, 201);
+
+        DB::beginTransaction();
+        try {
+            $order = Order::create([
+                'user_id' => Auth::auth()->id,
+                'totalPrice' => collect($request->items)->sum(fn($item) => $item['quantity'] * Product::find($item['productId'])->price),
+                'finalised' => false,
+            ]);
+
+            foreach ($request->items as $item) {
+                OrderDetail::create([
+                    'orderId' => $order->id,
+                    'productId' => $item['productId'],
+                    'quantity' => $item['quantity'],
+                    'price' => Product::find($item['productId'])->price,
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Order placed successfully'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+    
 
     /**
      * Display the specified resource.
