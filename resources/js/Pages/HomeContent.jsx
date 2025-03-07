@@ -25,7 +25,7 @@ export default function HomeContent() {
   };
 
   return (
-    <div className="home-content px-4 sm:px-6 py-6">
+    <div className="home-content overflow-y-auto px-4 sm:px-6 py-6">
       <section className="news mb-8">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">BMW News</h2>
         <div className="space-y-4">
