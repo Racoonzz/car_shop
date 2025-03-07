@@ -17,13 +17,13 @@
 
 .wrapper:has(>.sidebar.close) {
   grid-template-columns: 78px 1fr;
+  height: 100vh;
   transition: all 0.5s ease;
 }
 
 .logo-details {
   height: 50px !important;
   color: white !important;
-
 }
 
 .sidebar {
@@ -31,8 +31,7 @@
   flex-direction: column;
   margin-bottom: 0;
   height: 100vh;
-  /* width: 300px;
-  max-width: 300px; */
+ 
   background-color: black !important;
   /* Default background color */
   z-index: 100;
@@ -347,6 +346,7 @@
   /* Width when sidebar is collapsed */
 }
 
+
 @media (max-width: 768px) {
   #openSidebar {
     display: none !important;
@@ -612,6 +612,13 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.main-content {
+  margin-left: 250px; /* Push content to the right of the sidebar */
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto; /* Make the content scrollable */
 }
 
 .model-option {

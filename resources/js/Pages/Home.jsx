@@ -5,6 +5,7 @@ import ShowProducts from "./ShowProducts";
 import Modal from './Modal';
 import CartModal from './CartModal';
 import { motion } from 'framer-motion';
+import HomeContent from "./HomeContent";
 
 export default function Home({ auth }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -16,39 +17,33 @@ export default function Home({ auth }) {
     const [models, setModels] = useState([]);
     const [isContactsOpen, setIsContactsOpen] = useState(false);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [currentContent, setCurrentContent] = useState("home");
 
-    // Refs for the dropdowns
+    // Refs for the dropdown containers
     const modelsDropdownRef = useRef(null);
     const contactsDropdownRef = useRef(null);
 
     useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
-
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     useEffect(() => {
-        if (screenWidth < 768) {
-            setSidebarOpen(false);
-        } else {
-            setSidebarOpen(true);
-        }
+        setSidebarOpen(screenWidth >= 768);
     }, [screenWidth]);
 
     useEffect(() => {
-        axios.get('/products')
+        axios.get('/api/products')
             .then(response => {
                 const modelNames = [...new Set(response.data.map(product => product.models))];
                 setModels(modelNames);
             })
-            .catch(error => {
-                console.error('Error fetching models:', error);
-            });
+            .catch(error => console.error('Error fetching models:', error));
     }, []);
 
     useEffect(() => {
-        // Close models dropdown if clicked outside
+        // Close dropdowns if clicked outside their container
         const handleClickOutside = (event) => {
             if (modelsDropdownRef.current && !modelsDropdownRef.current.contains(event.target)) {
                 setIsModelsOpen(false);
@@ -59,22 +54,14 @@ export default function Home({ auth }) {
         };
 
         document.addEventListener("mousedown", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const toggleModelsDropdown = () => {
-        setIsModelsOpen(prev => !prev);
-    };
-
-    const toggleContactsDropdown = () => {
-        setIsContactsOpen(prev => !prev);
-    };
+    const toggleModelsDropdown = () => setIsModelsOpen(prev => !prev);
+    const toggleContactsDropdown = () => setIsContactsOpen(prev => !prev);
 
     const fetchProducts = () => {
-        axios.get('/products')
+        axios.get('/api/products')
             .then((response) => setProducts(response.data))
             .catch((error) => console.error('Error fetching products:', error));
     };
@@ -84,19 +71,15 @@ export default function Home({ auth }) {
         setIsCartVisible(false);
     };
 
-    const handleCloseModal = () => {
-        setIsModalVisible(false);
-    };
-
+    const handleCloseModal = () => setIsModalVisible(false);
     const toggleCart = () => {
-        setIsCartVisible(!isCartVisible);
+        setIsCartVisible(prev => !prev);
         setIsModalVisible(false);
     };
 
     const addToCart = (product) => {
         setCart((prevCart) => {
             const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
-
             if (existingProductIndex >= 0) {
                 const updatedCart = [...prevCart];
                 updatedCart[existingProductIndex].quantity += product.quantity;
@@ -109,27 +92,26 @@ export default function Home({ auth }) {
 
     const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
-            if (quantity === 0) {
-                return prevCart.filter((item) => item.id !== productId);
-            }
-
-            const existingItem = prevCart.find((item) => item.id === productId);
-
-            if (existingItem) {
-                return prevCart.map((item) =>
-                    item.id === productId ? { ...item, quantity } : item
-                );
-            } else {
-                return [...prevCart, { ...productData, id: productId, quantity }];
-            }
+            if (quantity === 0) return prevCart.filter(item => item.id !== productId);
+            const existingItem = prevCart.find(item => item.id === productId);
+            return existingItem
+                ? prevCart.map(item => item.id === productId ? { ...item, quantity } : item)
+                : [...prevCart, { ...productData, id: productId, quantity }];
         });
+    };
+
+    // Sidebar content click handlers
+    const handleHomeClick = () => setCurrentContent("home");
+    const handleProductClick = () => {
+        fetchProducts();
+        setCurrentContent("products");
     };
 
     return (
         <div className="wrapper">
             <div className={sidebarOpen ? "sidebar" : "sidebar close"} style={{ zIndex: 20 }}>
                 <div>
-                    <a href="#" className="Home w-full" id="Home">
+                    <a href="#" className="Home w-full" id="Home" onClick={handleHomeClick}>
                         <img src={bmwm} alt="" id="bmwm" />
                     </a>
                 </div>
@@ -153,15 +135,15 @@ export default function Home({ auth }) {
                         </div>
                     </li>
 
-                    <li className="showMenu">
-                        <div className="icon-link" id="Contacts" onClick={toggleContactsDropdown} ref={contactsDropdownRef}>
+                    {/* Contacts Dropdown */}
+                    <li className="showMenu" ref={contactsDropdownRef}>
+                        <div className="icon-link" id="Contacts" onClick={toggleContactsDropdown}>
                             <a href="#">
                                 <i className='bx bx-collection'></i>
                                 <span className="link_name">Contact</span>
                             </a>
                             <i className={`bx bxs-chevron-${isContactsOpen ? 'up' : 'down'} arrow`}></i>
                         </div>
-
                         {isContactsOpen && (
                             <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
                                 <li><a href="#" className="block py-1 hover:bg-gray-700">email</a></li>
@@ -171,15 +153,15 @@ export default function Home({ auth }) {
                         )}
                     </li>
 
-                    <li className="showMenu">
-                        <div className="icon-link" id="Models" onClick={toggleModelsDropdown} ref={modelsDropdownRef}>
+                    {/* Models Dropdown */}
+                    <li className="showMenu" ref={modelsDropdownRef}>
+                        <div className="icon-link" id="Models" onClick={toggleModelsDropdown}>
                             <a href="#">
                                 <i className='bx bx-car'></i>
                                 <span className="link_name">Models</span>
                             </a>
                             <i className={`bx bxs-chevron-${isModelsOpen ? 'up' : 'down'} arrow`}></i>
                         </div>
-
                         {isModelsOpen && (
                             <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
                                 <li className="text-white"><a className="link_name" href="#">Models</a></li>
@@ -195,7 +177,7 @@ export default function Home({ auth }) {
                     </li>
 
                     <li>
-                        <div className="icon-link" id="Explore" onClick={fetchProducts}>
+                        <div className="icon-link" id="Explore" onClick={handleProductClick}>
                             <a className="link_name" href="#" id="exploreLink">
                                 <i className='bx bx-compass'></i>
                                 <span className="link_name">Products</span>
@@ -205,20 +187,21 @@ export default function Home({ auth }) {
 
                     <div className="sidebarCloser">
                         <li>
-                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen((prev) => !prev)}>
+                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen(prev => !prev)}>
                                 <a className="link_name" href="#">
                                     <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
                                 </a>
                             </div>
                         </li>
                     </div>
-
                 </ul>
             </div>
 
-            <ShowProducts products={products} addToCart={addToCart} />
+            {/* Main content based on currentContent state */}
+            {currentContent === "home" && <HomeContent />}
+            {currentContent === "products" && <ShowProducts products={products} addToCart={addToCart} />}
 
-            {/* Modals with z-index higher than sidebar */}
+            {/* Modals with higher z-index */}
             {isModalVisible && (
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -229,7 +212,6 @@ export default function Home({ auth }) {
                     <Modal onClose={handleCloseModal} auth={auth} />
                 </motion.div>
             )}
-
             {isCartVisible && (
                 <motion.div
                     initial={{ opacity: 0 }}
