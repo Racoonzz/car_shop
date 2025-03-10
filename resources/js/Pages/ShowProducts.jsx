@@ -22,11 +22,11 @@ export default function ShowProducts({ products, addToCart }) {
   };
 
   const handleAddToCart = () => {
-    if (selectedProduct && quantity > 0) {
+    if (selectedProduct && quantity > 0 && selectedProduct.quantity > 0) {
       addToCart({ ...selectedProduct, quantity });
     }
   };
-
+  
   return (
     <div className="products text-center p-3 bg-[#e4e9f7] rounded-lg w-full overflow-y-auto">
       {/* Responsive Product Grid */}
@@ -84,7 +84,7 @@ export default function ShowProducts({ products, addToCart }) {
           onClick={closeModal}
         >
           <div
-            className="modal-content relative bg-white p-6 rounded-lg max-w-4xl w-full h-auto flex flex-col items-center gap-6 shadow-lg"
+            className="modal-content relative bg-white p-4 sm:p-6 rounded-lg max-w-4xl w-full h-auto flex flex-col items-center gap-6 shadow-lg overflow-auto max-h-[90vh] sm:max-h-[80vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button Inside Modal */}
@@ -104,7 +104,7 @@ export default function ShowProducts({ products, addToCart }) {
                 alt={selectedProduct.name}
                 className="max-w-[300px] w-full h-auto rounded-md shadow-md"
               />
-              <div className="w-full flex flex-col items-center gap-4">
+              <div className="w-full flex flex-col items-center gap-4 px-4">
                 <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[#555] overflow-auto max-h-[200px]">
                   {selectedProduct.description}
                 </p>
@@ -133,11 +133,18 @@ export default function ShowProducts({ products, addToCart }) {
                 </div>
                 <button
                   onClick={handleAddToCart} // Now properly defined!
-                  className="mt-4 px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+                  className={`mt-4 px-6 py-3 rounded w-full ${
+                    selectedProduct.quantity === 0
+                      ? 'bg-gray-500 cursor-not-allowed'
+                      : 'bg-blue-500 hover:bg-blue-600'
+                  } text-white`}
                   disabled={selectedProduct.quantity === 0}
                 >
                   Kosárba
                 </button>
+                {selectedProduct.quantity === 0 && (
+                  <span className="mt-2 text-sm text-gray-500">This product is out of stock and cannot be added to the cart.</span>
+                )}
               </div>
             </div>
           </div>
