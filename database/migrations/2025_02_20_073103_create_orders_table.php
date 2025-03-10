@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->date('orderDate')->default(now());
+            $table->integer('totalPrice');
             $table->boolean('finalised')->default(false);
         });
     }

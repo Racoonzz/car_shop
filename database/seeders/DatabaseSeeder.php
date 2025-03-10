@@ -45,19 +45,19 @@ class DatabaseSeeder extends Seeder
             Product::create($product);
         }
 
-        $json = File::get(database_path('data/orders.json'));
-        $orders = json_decode($json, true);
+        // $json = File::get(database_path('data/orders.json'));
+        // $orders = json_decode($json, true);
 
-        foreach ($orders as $order) {
-            Order::create($order);
-        }
+        // foreach ($orders as $order) {
+        //     Order::create($order);
+        // }
 
-        $json = File::get(database_path('data/ordersDetails.json'));
-        $ordersDetails = json_decode($json, true);
+        // $json = File::get(database_path('data/ordersDetails.json'));
+        // $ordersDetails = json_decode($json, true);
 
-        foreach ($ordersDetails as $orderDetail) {
-            OrderDetail::create($orderDetail);
-        }
+        // foreach ($ordersDetails as $orderDetail) {
+        //     OrderDetail::create($orderDetail);
+        // }
     }
 }
 
