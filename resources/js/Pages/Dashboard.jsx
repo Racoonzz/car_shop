@@ -1,17 +1,15 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import "../../../resources/css/style.css";
 
 export default function Dashboard({ auth }) {
-
     const [products, setProducts] = useState([]);
 
-    const fetchProducts = () => {
-        axios
-            .get('/products') // Backend route hívása
-            .then((response) => setProducts(response.data))
-            .catch((error) => console.error('Hiba történt a lekérdezés során:', error));
+    const fetchProducts = async () => {
+        const response = await fetch('/api/products');
+        const data = await response.json();
+        setProducts(data);
     };
 
     return (
@@ -46,19 +44,19 @@ export default function Dashboard({ auth }) {
                                             ) : (
                                                 <span>Nem rendelhető</span>
                                             )}
-
                                         </div>
                                     ))
                                 )}
                             </div>
 
                             {auth.user.role === 'admin' && (
-                                <button  className="text-blue-500">
+                                <button 
+                                    className="text-blue-500"
+                                    onClick={() => Inertia.visit(route('admin.dashboard'))}
+                                >
                                     Admin Dashboard megnyitása
                                 </button>
                             )}
-
-
 
                         </div>
                     </div>
