@@ -10,7 +10,7 @@ use App\Http\Controllers\ProductController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::post('/orders', [OrderController::class, 'store']);
+
 //Route::post('/orderdetails', [OrderDetailController::class, 'store']);
 Route::get('/models', [CarModelController::class, 'index']);
 Route::delete('/ordersDetails/{id}', [OrderDetailController::class, 'destroy'])->name('ordersDetails.destroy');

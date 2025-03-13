@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
   // Shipping info state
@@ -41,10 +42,26 @@ export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
     }));
   };
 
+const checkout = async (cart) => {
+    const cartItems = cart.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity
+    }))
+    try {
+        const response = await axios.post('/orders', { items: cartItems });
+        alert(response.data.message);
+    } catch (error) {
+        console.error('Error placing order:', error);
+        alert('Error placing order');
+    }
+};
+
   // Handle form submission and open the checkout page
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsCheckoutOpen(true); // Open the Payment and Shipment Page
+    checkout(cart);
+    handleClose();
   };
 
   // Handle close action for the checkout page
@@ -210,7 +227,7 @@ export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
                 </select>
                 {!isNextDayDeliveryAvailable() && (
                   <p className="text-red-500 text-sm mt-2">
-                    SameDay szállítás nem elérhető 14 óra után, illetve 100.000 Ft alatti rendelés esetén.
+                    SameDay szĂĄllĂ­tĂĄs nem elĂŠrhetĹ 14 Ăłra utĂĄn, illetve 100.000 Ft alatti rendelĂŠs esetĂŠn.
                   </p>
                 )}
               </div>
