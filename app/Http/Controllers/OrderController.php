@@ -20,7 +20,7 @@ class OrderController extends Controller
     {
         
         $orders =  Order::with(['user', 'orderDetails.product'])->get();
-        return Inertia::render('Orders', ['orders' => $orders]);
+        return Inertia::render('Admin/Orders', ['orders' => $orders]);
         //return $orders;
     }
 

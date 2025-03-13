@@ -6,6 +6,7 @@ import Modal from './Modal';
 import CartModal from './CartModal';
 import { motion } from 'framer-motion';
 import HomeContent from "./HomeContent";
+import axios from "axios";
 
 export default function Home({ auth }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,8 +19,8 @@ export default function Home({ auth }) {
     const [isContactsOpen, setIsContactsOpen] = useState(false);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [currentContent, setCurrentContent] = useState("home");
+    const [selectedModel, setSelectedModel] = useState(null); // New state for selected model
 
-    // Refs for the dropdown containers
     const modelsDropdownRef = useRef(null);
     const contactsDropdownRef = useRef(null);
 
@@ -38,12 +39,12 @@ export default function Home({ auth }) {
             .then(response => {
                 const modelNames = [...new Set(response.data.map(product => product.models))];
                 setModels(modelNames);
+                setProducts(response.data);
             })
             .catch(error => console.error('Error fetching models:', error));
     }, []);
 
     useEffect(() => {
-        // Close dropdowns if clicked outside their container
         const handleClickOutside = (event) => {
             if (modelsDropdownRef.current && !modelsDropdownRef.current.contains(event.target)) {
                 setIsModelsOpen(false);
@@ -100,10 +101,19 @@ export default function Home({ auth }) {
         });
     };
 
-    // Sidebar content click handlers
-    const handleHomeClick = () => setCurrentContent("home");
+    const handleHomeClick = () => {
+        setCurrentContent("home");
+        setSelectedModel(null); // Reset model selection when going back home
+    };
+
     const handleProductClick = () => {
         fetchProducts();
+        setCurrentContent("products");
+        setSelectedModel(null); // Reset model filter when exploring all products
+    };
+
+    const handleModelClick = (model) => {
+        setSelectedModel(model);
         setCurrentContent("products");
     };
 
@@ -135,24 +145,6 @@ export default function Home({ auth }) {
                         </div>
                     </li>
 
-                    {/* Contacts Dropdown */}
-                    <li className="showMenu" ref={contactsDropdownRef}>
-                        <div className="icon-link" id="Contacts" onClick={toggleContactsDropdown}>
-                            <a href="#">
-                                <i className='bx bx-collection'></i>
-                                <span className="link_name">Contact</span>
-                            </a>
-                            <i className={`bx bxs-chevron-${isContactsOpen ? 'up' : 'down'} arrow`}></i>
-                        </div>
-                        {isContactsOpen && (
-                            <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
-                                <li><a href="#" className="block py-1 hover:bg-gray-700">email</a></li>
-                                <li><a href="#" className="block py-1 hover:bg-gray-700">phone</a></li>
-                                <li><a href="#" className="block py-1 hover:bg-gray-700">fax</a></li>
-                            </ul>
-                        )}
-                    </li>
-
                     {/* Models Dropdown */}
                     <li className="showMenu" ref={modelsDropdownRef}>
                         <div className="icon-link" id="Models" onClick={toggleModelsDropdown}>
@@ -164,10 +156,13 @@ export default function Home({ auth }) {
                         </div>
                         {isModelsOpen && (
                             <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
-                                <li className="text-white"><a className="link_name" href="#">Models</a></li>
                                 {models.length > 0 ? (
                                     models.map((model, index) => (
-                                        <li key={index}><a href="#" className="block py-1 hover:bg-gray-700">{model}</a></li>
+                                        <li key={index}>
+                                            <a href="#" className="block py-1 hover:bg-gray-700" onClick={() => handleModelClick(model)}>
+                                                {model}
+                                            </a>
+                                        </li>
                                     ))
                                 ) : (
                                     <li>No models available</li>
@@ -184,41 +179,26 @@ export default function Home({ auth }) {
                             </a>
                         </div>
                     </li>
-
-                    <div className="sidebarCloser">
-                        <li>
-                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen(prev => !prev)}>
-                                <a className="link_name" href="#">
-                                    <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
-                                </a>
-                            </div>
-                        </li>
-                    </div>
                 </ul>
             </div>
 
-            {/* Main content based on currentContent state */}
+            {/* Main Content */}
             {currentContent === "home" && <HomeContent />}
-            {currentContent === "products" && <ShowProducts products={products} addToCart={addToCart} />}
+            {currentContent === "products" && (
+                <ShowProducts
+                    products={selectedModel ? products.filter(product => product.models === selectedModel) : products}
+                    addToCart={addToCart}
+                />
+            )}
 
-            {/* Modals with higher z-index */}
+            {/* Modals */}
             {isModalVisible && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50"
-                >
+                <motion.div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
                     <Modal onClose={handleCloseModal} auth={auth} />
                 </motion.div>
             )}
             {isCartVisible && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50"
-                >
+                <motion.div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
                     <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} />
                 </motion.div>
             )}
