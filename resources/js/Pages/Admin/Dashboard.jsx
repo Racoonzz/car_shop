@@ -33,7 +33,7 @@ const ListProducts = () => {
     return (
         <AdminLayout header={<h2 className="font-semibold text-xl text-gray-800">List Products</h2>}>
             <div className="bg-white shadow-lg rounded-lg p-4">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Product List</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Product List</h2>
 
                 {products.length === 0 ? (
                     <p className="text-gray-500 text-center">No products available</p>
@@ -47,28 +47,28 @@ const ListProducts = () => {
                                 <h3 className="text-sm md:text-base font-semibold text-center bg-gray-800 text-white py-1 px-3 rounded">
                                     {product.name}
                                 </h3>
-                                <p className="text-xs text-gray-600 mt-2 h-10 overflow-hidden text-ellipsis whitespace-nowrap">
+                                <p className="text-xs text-gray-600 mt-2 h-12 overflow-hidden text-ellipsis text-wrap text-center">
                                     {product.description}
                                 </p>
                                 {product.pictureUrl && (
                                     <img
                                         src={`/storage/${product.pictureUrl}`}
                                         alt={product.name}
-                                        className="mt-3 w-full max-w-[150px] h-[150px] object-cover rounded-md shadow-sm"
+                                        className="mt-3 w-full max-w-[200px] h-[200px] object-cover rounded-md shadow-sm"
                                     />
                                 )}
                                 <div className="mt-auto flex flex-col items-center w-full">
                                     <h3 className="text-sm font-semibold mt-2">{product.price} Ft</h3>
-                                    <div className="flex gap-2 mt-3 w-full">
+                                    <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
                                         <Link 
                                             href={`/admin/products/${product.id}/edit`} 
-                                            className="w-full bg-blue-500 text-white py-1 text-sm text-center rounded hover:bg-blue-600"
+                                            className="w-full bg-blue-500 text-white py-2 text-sm text-center rounded hover:bg-blue-600"
                                         >
                                             Edit
                                         </Link>
                                         <button 
                                             onClick={() => handleDelete(product.id)} 
-                                            className="w-full bg-red-500 text-white py-1 text-sm rounded hover:bg-red-600"
+                                            className="w-full bg-red-500 text-white py-2 text-sm rounded hover:bg-red-600"
                                         >
                                             Delete
                                         </button>

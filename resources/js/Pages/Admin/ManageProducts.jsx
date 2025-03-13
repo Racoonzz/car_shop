@@ -14,28 +14,35 @@ const ManageProducts = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    // Handle form submission
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        setLoading(true);
+        setSuccessMessage('');
+        setErrorMessage('');
+    
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
         formData.append('quantity', quantity);
-        formData.append('categoryId', categoryId);
-        // If there's an image
+        formData.append('categoryId', Number(categoryId));
+        formData.append('models', models);
+    
         if (image) {
-          formData.append('image', image);
+            formData.append('image', image);
         }
-      
-        console.log('Form data:', formData);  // Log this data to check what is being sent
-      
+    
         try {
-          const response = await axios.put(`/api/products/${productId}`, formData);
-          // Handle success
+            const response = await axios.post('/api/products', formData);
+            setSuccessMessage('Product added successfully!');
+            setLoading(false);
         } catch (error) {
-          console.error('Error:', error);
+            setErrorMessage('Failed to add product');
+            console.error('Error:', error);
+            setLoading(false);
         }
-      };
+    };
+    
       
 
     return (

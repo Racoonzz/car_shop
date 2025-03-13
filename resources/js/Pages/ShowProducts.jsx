@@ -52,7 +52,7 @@ export default function ShowProducts({ products, addToCart }) {
               <img
                 src={product.pictureUrl}
                 alt={product.name}
-                className="w-full max-w-[180px] h-[180px] object-cover rounded-md"
+                className="w-full max-w-[180px] h-[180px] object-contain rounded-md"
               />
             </div>
 

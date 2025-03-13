@@ -21,40 +21,45 @@ const EditProduct = ({ product }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+        setLoading(true);
+        setSuccessMessage('');
+        setErrorMessage('');
+
         // Create form data
         const formData = new FormData();
+        formData.append('_method', 'PUT'); // Important for Laravel
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
         formData.append('quantity', quantity);
-        formData.append('categoryId', categoryId);
+        formData.append('categoryId', parseInt(categoryId, 10)); // Ensure it's an integer
         
         if (image) {
             formData.append('image', image);
         }
-    
-        // Log the form data to inspect
+
+        // Debug: Check formData values
         for (let [key, value] of formData.entries()) {
-            console.log(key, value);
+            console.log(`${key}:`, value);
         }
-    
+
         try {
-            // Make PUT request to update the product
-            const response = await axios.put(`/api/products/${product.id}`, formData, {
+            // Send POST request (with _method='PUT')
+            const response = await axios.post(`/api/products/${product.id}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            // Handle success response (you can adjust this as needed)
+
             console.log(response.data);
             setSuccessMessage('Product updated successfully!');
         } catch (error) {
-            // Handle errors (log validation errors or general errors)
             if (error.response && error.response.data.errors) {
                 console.log('Validation errors:', error.response.data.errors);
                 setErrorMessage(`Validation errors: ${Object.values(error.response.data.errors).join(', ')}`);
             } else {
                 setErrorMessage('Error updating product. Please try again.');
             }
+        } finally {
+            setLoading(false);
         }
     };
 
