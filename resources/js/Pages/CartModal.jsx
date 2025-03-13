@@ -4,65 +4,57 @@ import { motion } from 'framer-motion';
 import CheckoutPage from './CheckoutPage';
 
 export default function CartModal({ cart, toggleCart, updateCart }) {
-  const [quantities, setQuantities] = useState(() => {
-    // Check if there's a cart saved in localStorage
-    const savedCart = JSON.parse(localStorage.getItem('cart'));
-    return savedCart ? savedCart.reduce((acc, product) => {
-      acc[product.id] = product.quantity || 1;
-      return acc;
-    }, {}) : cart.reduce((acc, product) => {
+  const [quantities, setQuantities] = useState({});
+  const [products, setProducts] = useState([]);
+  const [isCheckoutOpen, setCheckoutOpen] = useState(false);
+
+  // Fetching product data (including the latest quantities and other details)
+  useEffect(() => {
+    // This fetches the current list of products from your database or API
+    fetch('/api/products')
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error('Error fetching products:', error));
+  }, []);
+
+  // Use product data to initialize quantities
+  useEffect(() => {
+    const initialQuantities = cart.reduce((acc, product) => {
       acc[product.id] = product.quantity || 1;
       return acc;
     }, {});
-  });
-  
-  const [isCheckoutOpen, setCheckoutOpen] = useState(false);
-
-  // Save the cart to localStorage whenever it changes
-  useEffect(() => {
-    const savedCart = cart.map(product => ({
-      ...product,
-      quantity: quantities[product.id] || 1,
-    }));
-    localStorage.setItem('cart', JSON.stringify(savedCart));
-  }, [cart, quantities]);
-
-  useEffect(() => {
-    setQuantities(
-      cart.reduce((acc, product) => {
-        acc[product.id] = product.quantity || 1;
-        return acc;
-      }, {})
-    );
+    setQuantities(initialQuantities);
   }, [cart]);
 
   const calculateTotal = useMemo(() => {
     return cart.reduce(
-      (total, product) => total + (parseFloat(product.price) || 0) * (quantities[product.id] || 1),
+      (total, product) =>
+        total + (parseFloat(product.price) || 0) * (quantities[product.id] || 1),
       0
     );
   }, [cart, quantities]);
 
   const handleQuantityChange = (id, e) => {
     const value = Math.max(1, parseInt(e.target.value, 10) || 1);
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-    updateCart(id, value);  // Ensure that updateCart is correctly modifying the quantity in the cart
+    const maxQuantity = products.find((product) => product.id === id)?.quantity || 1; // Get stock
+    const updatedValue = Math.min(value, maxQuantity); // Prevent overstocking
+
+    setQuantities((prev) => ({ ...prev, [id]: updatedValue }));
+
+    updateCart(id, updatedValue, cart.find(item => item.id === id)); // Ensure cart updates properly
 };
 
 
   const handleRemoveItem = (id) => {
-    updateCart(id, 0);
+    updateCart(id, 0); // Remove item from cart
   };
 
   const handleCheckout = () => {
-    setCheckoutOpen(true); // Open the CheckoutPage modal
+    setCheckoutOpen(true);
   };
 
   const handleCloseCheckout = () => {
-    setCheckoutOpen(false); // Close the CheckoutPage modal
+    setCheckoutOpen(false);
   };
 
   return (
@@ -83,24 +75,21 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
         <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Shopping Cart</h2>
 
         {cart.length > 0 ? (
-          <div aria-live="polite">
+          <div>
             <div
               className={`product-list ${cart.length > 3 ? 'overflow-y-auto max-h-80' : ''}`}
-              style={{
-                overflowX: 'hidden', // Prevent horizontal scrolling
-                scrollbarWidth: 'thin', // Firefox: Thin scrollbar
-                scrollbarColor: '#B1B8C2 #E2E8F0', // Firefox: Light color thumb, subtle background
-              }}
             >
               {cart.map((product) => (
-                <motion.div 
-                  key={product.id} 
+                <motion.div
+                  key={product.id}
                   className="cart-item mb-4 flex items-center border-b pb-4 hover:bg-gray-100 transition rounded-lg p-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <img src={product.pictureUrl} alt={product.name}
+                  <img
+                    src={product.pictureUrl}
+                    alt={product.name}
                     className="w-16 h-16 object-cover rounded-md mr-4"
                   />
                   <div className="flex-grow">
@@ -130,44 +119,35 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
             </div>
 
             <div className="total mt-4 text-center">
-              <h3 className="text-lg font-semibold text-gray-800">Total: {calculateTotal} Ft</h3>
+              <h3 className="text-lg font-medium text-gray-700">Total: {calculateTotal.toFixed(2)} Ft</h3>
+              <button
+                onClick={handleCheckout}
+                className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-md w-full hover:bg-blue-600 transition-all duration-150 transform active:scale-95"
+              >
+                Proceed to Checkout
+              </button>
             </div>
           </div>
         ) : (
-          <p className="text-center text-gray-500">Your cart is empty!</p>
+          <div className="text-center text-gray-500">
+            Your cart is empty.
+          </div>
         )}
 
-        
-
-        <div className="flex justify-between mt-6 gap-4">
-          <button
-            onClick={toggleCart}
-            className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition"
-          >
-            Close
-          </button>
-          <button
-            onClick={handleCheckout}
-            disabled={cart.length === 0} // Disable Checkout if cart is empty
-            className={`px-4 py-2 rounded transition ${cart.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-          >
-            Checkout
-          </button>
-        </div>
+        {isCheckoutOpen && (
+          <CheckoutPage
+            cart={cart}
+            toggleCheckout={handleCloseCheckout}
+            calculateTotal={calculateTotal}
+          />
+        )}
       </motion.div>
-
-      {/* CheckoutPage Modal */}
-      {isCheckoutOpen && <CheckoutPage cart={cart} closeCheckout={handleCloseCheckout} />}
     </motion.div>
   );
 }
 
 CartModal.propTypes = {
-  cart: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    })
-  ).isRequired,
+  cart: PropTypes.array.isRequired,
   toggleCart: PropTypes.func.isRequired,
   updateCart: PropTypes.func.isRequired,
 };

@@ -4,6 +4,7 @@ export default function ShowProducts({ products, addToCart }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -21,12 +22,23 @@ export default function ShowProducts({ products, addToCart }) {
     setQuantity(value);
   };
 
-  const handleAddToCart = () => {
-    if (selectedProduct && quantity > 0 && selectedProduct.quantity > 0) {
-      addToCart({ ...selectedProduct, quantity });
+  const handleAddToCartFromSmallCard = (product, e) => {
+    e.stopPropagation(); // Prevent the modal from opening
+    if (product.quantity > 0) {
+      addToCart({ ...product, quantity: 1 }); // Add only one item to the cart
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 2000); // Hide the popup after 2 seconds
     }
   };
-  
+
+  const handleAddToCartFromModal = (product) => {
+    if (product && quantity > 0 && product.quantity > 0) {
+      addToCart({ ...product, quantity });
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 2000); // Hide the popup after 2 seconds
+    }
+  };
+
   return (
     <div className="products text-center p-3 bg-[#e4e9f7] rounded-lg w-full overflow-y-auto">
       {/* Responsive Product Grid */}
@@ -35,7 +47,7 @@ export default function ShowProducts({ products, addToCart }) {
           <div
             key={product.id}
             className="flex flex-col bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer h-auto p-4"
-            onClick={() => openModal(product)}
+            onClick={() => openModal(product)} // Open modal when clicking on the small card
           >
             {/* Product Name */}
             <h2 className="text-sm md:text-base font-semibold text-center bg-[#333] text-white py-2 px-4 rounded-md">
@@ -61,11 +73,8 @@ export default function ShowProducts({ products, addToCart }) {
               <h3 className="text-sm sm:text-base md:text-lg font-semibold">{product.price} Ft</h3>
               {product.quantity !== 0 ? (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent modal from opening when clicking button
-                    addToCart({ ...product, quantity: 1 });
-                  }}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm w-full"
+                  onClick={(e) => handleAddToCartFromSmallCard(product, e)} // Add only one item to cart from the small card
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm w-full transition-all duration-150 transform active:scale-95"
                 >
                   Kosárba
                 </button>
@@ -132,12 +141,12 @@ export default function ShowProducts({ products, addToCart }) {
                   </span>
                 </div>
                 <button
-                  onClick={handleAddToCart} // Now properly defined!
+                  onClick={() => handleAddToCartFromModal(selectedProduct)} // Add selected quantity to cart from modal
                   className={`mt-4 px-6 py-3 rounded w-full ${
                     selectedProduct.quantity === 0
                       ? 'bg-gray-500 cursor-not-allowed'
                       : 'bg-blue-500 hover:bg-blue-600'
-                  } text-white`}
+                  } text-white transition-all duration-150 transform active:scale-95`}
                   disabled={selectedProduct.quantity === 0}
                 >
                   Kosárba
@@ -148,6 +157,13 @@ export default function ShowProducts({ products, addToCart }) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Add to Cart Popup */}
+      {showPopup && (
+        <div className="popup fixed bottom-10 right-10 bg-green-500 text-white p-3 rounded-lg shadow-lg opacity-90">
+          <span>Product added to cart!</span>
         </div>
       )}
     </div>

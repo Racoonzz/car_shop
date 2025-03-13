@@ -94,12 +94,12 @@ export default function Home({ auth }) {
     const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
             if (quantity === 0) return prevCart.filter(item => item.id !== productId);
-            const existingItem = prevCart.find(item => item.id === productId);
-            return existingItem
-                ? prevCart.map(item => item.id === productId ? { ...item, quantity } : item)
-                : [...prevCart, { ...productData, id: productId, quantity }];
+            return prevCart.map(item =>
+                item.id === productId ? { ...item, quantity } : item
+            );
         });
     };
+    
 
     const handleHomeClick = () => {
         setCurrentContent("home");
@@ -179,6 +179,16 @@ export default function Home({ auth }) {
                             </a>
                         </div>
                     </li>
+
+                    <div className="sidebarCloser">
+                        <li>
+                            <div className="icon-link" id="openSidebar" onClick={() => setSidebarOpen(prev => !prev)}>
+                                <a className="link_name" href="#">
+                                    <i className={sidebarOpen ? "bx bx-arrow-from-right" : "bx bx-arrow-from-left"} ></i>
+                                </a>
+                            </div>
+                        </li>
+                    </div>
                 </ul>
             </div>
 
