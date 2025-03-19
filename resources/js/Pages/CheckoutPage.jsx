@@ -227,7 +227,7 @@ const checkout = async (cart) => {
                 </select>
                 {!isNextDayDeliveryAvailable() && (
                   <p className="text-red-500 text-sm mt-2">
-                    SameDay szĂĄllĂ­tĂĄs nem elĂŠrhetĹ 14 Ăłra utĂĄn, illetve 100.000 Ft alatti rendelĂŠs esetĂŠn.
+                    SameDay szállítás nem elérhető 14 óra után, illetve 100.000 Ft alatti rendelés esetén.
                   </p>
                 )}
               </div>
