@@ -116,7 +116,9 @@ export default function Home({ auth }) {
         );
     };
 
-
+    const deleteCart = ()=>{
+        setCart([]);
+    }
 
     const handleHomeClick = () => {
         setCurrentContent("home");
@@ -236,6 +238,7 @@ export default function Home({ auth }) {
                 <ShowProducts
                     products={selectedModel ? products.filter(product => product.models === selectedModel) : products}
                     addToCart={addToCart}
+                    deleteCart={deleteCart}
                 />
             )}
 
@@ -251,6 +254,7 @@ export default function Home({ auth }) {
                         cart={cart}
                         toggleCart={toggleCart}
                         updateCart={updateCart}
+                        deleteCart={deleteCart}
                         products={products} // Pass the products array
                     />
                 </motion.div>

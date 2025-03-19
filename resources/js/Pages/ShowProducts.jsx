@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function ShowProducts({ products, addToCart }) {
+export default function ShowProducts({ products, addToCart, deleteCart }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -55,7 +55,7 @@ export default function ShowProducts({ products, addToCart }) {
               {product.description}
             </p>
             <div className="w-full flex justify-center">
-              <img src={product.pictureUrl} alt={product.name} className="w-full max-w-[180px] h-[180px] object-contain rounded-md" />
+              <img src={`/storage/${product.pictureUrl}`} alt={product.name} className="w-full max-w-[180px] h-[180px] object-contain rounded-md" />
             </div>
             <div className="mt-auto flex flex-col items-center">
               <h3 className="text-sm sm:text-base md:text-lg font-semibold">{product.price} Ft</h3>

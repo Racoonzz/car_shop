@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import CheckoutPage from './CheckoutPage';
 
-export default function CartModal({ cart, toggleCart, updateCart, products }) {
+export default function CartModal({ cart, toggleCart, updateCart, products, deleteCart }) {
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
   // Calculate the total price
@@ -75,7 +75,7 @@ export default function CartModal({ cart, toggleCart, updateCart, products }) {
                     exit={{ opacity: 0 }}
                   >
                     <img
-                      src={product.pictureUrl}
+                      src={`/storage/${product.pictureUrl}`}
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-md mr-4"
                     />
