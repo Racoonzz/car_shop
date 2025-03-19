@@ -91,6 +91,11 @@ export default function Home({ auth }) {
         });
     };
 
+    const deleteCart = () => {
+        setCart([]);
+    }
+
+        
     const updateCart = (productId, quantity, productData) => {
         setCart((prevCart) => {
             if (quantity === 0) return prevCart.filter(item => item.id !== productId);
@@ -209,7 +214,7 @@ export default function Home({ auth }) {
             )}
             {isCartVisible && (
                 <motion.div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
-                    <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} />
+                    <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} deleteCart={deleteCart} />
                 </motion.div>
             )}
         </div>

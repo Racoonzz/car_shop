@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import CheckoutPage from './CheckoutPage';
 
-export default function CartModal({ cart, toggleCart, updateCart }) {
+export default function CartModal({ cart, toggleCart, updateCart, deleteCart }) {
   const [quantities, setQuantities] = useState({});
   const [products, setProducts] = useState([]);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
@@ -88,7 +88,7 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
                   exit={{ opacity: 0 }}
                 >
                   <img
-                    src={product.pictureUrl}
+                    src={`/storage/${product.pictureUrl}`}
                     alt={product.name}
                     className="w-16 h-16 object-cover rounded-md mr-4"
                   />
@@ -139,6 +139,7 @@ export default function CartModal({ cart, toggleCart, updateCart }) {
             cart={cart}
             toggleCheckout={handleCloseCheckout}
             calculateTotal={calculateTotal}
+            deleteCart={deleteCart}
           />
         )}
       </motion.div>

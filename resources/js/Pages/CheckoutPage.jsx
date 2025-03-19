@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
+export default function CheckoutPage({ cart, updateCart, closeCheckout, deleteCart }) {
   // Shipping info state
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
@@ -50,6 +50,7 @@ const checkout = async (cart) => {
     try {
         const response = await axios.post('/orders', { items: cartItems });
         alert(response.data.message);
+        deleteCart();
     } catch (error) {
         console.error('Error placing order:', error);
         alert('Error placing order');

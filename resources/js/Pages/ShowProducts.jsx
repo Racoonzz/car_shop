@@ -62,7 +62,7 @@ export default function ShowProducts({ products, addToCart }) {
             {/* Square Image - Responsive */}
             <div className="w-full flex justify-center">
               <img
-                src={product.pictureUrl}
+                src={`/storage/${product.pictureUrl}`}
                 alt={product.name}
                 className="w-full max-w-[180px] h-[180px] object-contain rounded-md"
               />
