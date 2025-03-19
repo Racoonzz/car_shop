@@ -16,13 +16,13 @@ export default function Home({ auth }) {
     const [cart, setCart] = useState([]);
     const [isModelsOpen, setIsModelsOpen] = useState(false);
     const [models, setModels] = useState([]);
-    const [isContactsOpen, setIsContactsOpen] = useState(false);
+    const [isContactsOpen, setIsContactsOpen] = useState(false);  // Contacts dropdown state
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [currentContent, setCurrentContent] = useState("home");
     const [selectedModel, setSelectedModel] = useState(null); // New state for selected model
 
     const modelsDropdownRef = useRef(null);
-    const contactsDropdownRef = useRef(null);
+    const contactsDropdownRef = useRef(null); // Ref for contacts dropdown
 
     useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth);
@@ -50,7 +50,7 @@ export default function Home({ auth }) {
                 setIsModelsOpen(false);
             }
             if (contactsDropdownRef.current && !contactsDropdownRef.current.contains(event.target)) {
-                setIsContactsOpen(false);
+                setIsContactsOpen(false); // Close contacts dropdown when clicking outside
             }
         };
 
@@ -59,7 +59,7 @@ export default function Home({ auth }) {
     }, []);
 
     const toggleModelsDropdown = () => setIsModelsOpen(prev => !prev);
-    const toggleContactsDropdown = () => setIsContactsOpen(prev => !prev);
+    const toggleContactsDropdown = () => setIsContactsOpen(prev => !prev); // Toggle contacts dropdown
 
     const fetchProducts = () => {
         axios.get('/api/products')
@@ -80,31 +80,43 @@ export default function Home({ auth }) {
 
     const addToCart = (product) => {
         setCart((prevCart) => {
-            const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
-            if (existingProductIndex >= 0) {
-                const updatedCart = [...prevCart];
-                updatedCart[existingProductIndex].quantity += product.quantity;
-                return updatedCart;
-            } else {
-                return [...prevCart, { ...product, quantity: product.quantity }];
-            }
+          const productInDatabase = products.find((p) => p.id === product.id); // Find the product in the database
+          const maxQuantity = productInDatabase ? productInDatabase.quantity : 1; // Get the available stock
+      
+          // Check if the product is already in the cart
+          const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
+      
+          if (existingProductIndex >= 0) {
+            // Product is already in the cart
+            const updatedCart = [...prevCart];
+            const newQuantity = updatedCart[existingProductIndex].quantity + (product.quantity || 1);
+      
+            // Ensure the new quantity does not exceed the available stock
+            updatedCart[existingProductIndex].quantity = Math.min(newQuantity, maxQuantity);
+            return updatedCart;
+          } else {
+            // Product is not in the cart
+            const quantity = Math.min(product.quantity || 1, maxQuantity); // Ensure the quantity does not exceed the available stock
+            return [...prevCart, { ...product, quantity }];
+          }
         });
+      };
+
+    const updateCart = (id, newQuantity) => {
+        const product = products.find((p) => p.id === id);
+        if (!product) return;
+
+        const maxQuantity = product.quantity;
+        const updatedQuantity = Math.min(newQuantity, maxQuantity);
+
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.id === id ? { ...item, quantity: updatedQuantity } : item
+            )
+        );
     };
 
-    const deleteCart = () => {
-        setCart([]);
-    }
 
-        
-    const updateCart = (productId, quantity, productData) => {
-        setCart((prevCart) => {
-            if (quantity === 0) return prevCart.filter(item => item.id !== productId);
-            return prevCart.map(item =>
-                item.id === productId ? { ...item, quantity } : item
-            );
-        });
-    };
-    
 
     const handleHomeClick = () => {
         setCurrentContent("home");
@@ -176,6 +188,27 @@ export default function Home({ auth }) {
                         )}
                     </li>
 
+                    {/* Contacts Dropdown */}
+                    <li className="showMenu" ref={contactsDropdownRef}>
+                        <div className="icon-link" id="Contacts" onClick={toggleContactsDropdown}>
+                            <a href="#">
+                                <i className='bx bx-phone'></i>
+                                <span className="link_name">Contacts</span>
+                            </a>
+                            <i className={`bx bxs-chevron-${isContactsOpen ? 'up' : 'down'} arrow`}></i>
+                        </div>
+                        {isContactsOpen && (
+                            <ul className="sub-menu bg-gray-800 text-white py-2 px-4 rounded-md mt-1 shadow-lg">
+                                <li>
+                                    <a href="#" className="block py-1 hover:bg-gray-700">Email</a>
+                                </li>
+                                <li>
+                                    <a href="#" className="block py-1 hover:bg-gray-700">Phone Number</a>
+                                </li>
+                            </ul>
+                        )}
+                    </li>
+
                     <li>
                         <div className="icon-link" id="Explore" onClick={handleProductClick}>
                             <a className="link_name" href="#" id="exploreLink">
@@ -214,7 +247,12 @@ export default function Home({ auth }) {
             )}
             {isCartVisible && (
                 <motion.div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
-                    <CartModal cart={cart} toggleCart={toggleCart} updateCart={updateCart} deleteCart={deleteCart} />
+                    <CartModal
+                        cart={cart}
+                        toggleCart={toggleCart}
+                        updateCart={updateCart}
+                        products={products} // Pass the products array
+                    />
                 </motion.div>
             )}
         </div>
