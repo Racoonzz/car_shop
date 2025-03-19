@@ -33,7 +33,7 @@ export default function AdminLayout({ header, children }) {
                                 List Products
                             </NavLink>
                             <NavLink href={route('admin.products')} active={route().current('admin.products')}>
-                                Add/Remove Product
+                                Add Product
                             </NavLink>
                             <NavLink href={route('admin.orders')} active={route().current('admin.orders')}>
                                 Manage Orders
@@ -87,7 +87,7 @@ export default function AdminLayout({ header, children }) {
                             List Products
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('admin.products')} active={route().current('admin.products')}>
-                            Add/Remove Product
+                            Add Product
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('admin.orders')} active={route().current('admin.orders')}>
                             Manage Orders
