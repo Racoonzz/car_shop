@@ -48,7 +48,7 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order = Order::create([
-                'user_id' => Auth::auth()->id,
+                'user_id' => Auth::user()->id,
                 'totalPrice' => collect($request->items)->sum(fn($item) => $item['quantity'] * Product::find($item['productId'])->price),
                 'finalised' => false,
             ]);

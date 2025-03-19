@@ -129,6 +129,7 @@ export default function CartModal({ cart, toggleCart, updateCart, products }) {
             cart={cart}
             toggleCheckout={handleCloseCheckout}
             calculateTotal={calculateTotal}
+            deleteCart={deleteCart}
           />
         )}
       </motion.div>

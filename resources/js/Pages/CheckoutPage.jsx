@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
+export default function CheckoutPage({ cart, updateCart, closeCheckout, deleteCart }) {
   // Shipping info state
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
@@ -41,10 +42,27 @@ export default function CheckoutPage({ cart, updateCart, closeCheckout }) {
     }));
   };
 
+const checkout = async (cart) => {
+    const cartItems = cart.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity
+    }))
+    try {
+        const response = await axios.post('/orders', { items: cartItems });
+        alert(response.data.message);
+        deleteCart();
+    } catch (error) {
+        console.error('Error placing order:', error);
+        alert('Error placing order');
+    }
+};
+
   // Handle form submission and open the checkout page
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsCheckoutOpen(true); // Open the Payment and Shipment Page
+    checkout(cart);
+    handleClose();
   };
 
   // Handle close action for the checkout page

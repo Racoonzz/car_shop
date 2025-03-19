@@ -37,12 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::post('/orders', [OrderController::class, 'store']);
 });
 
 Route::get('/', function () { return Inertia::render('Home'); })->name('home');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order')->middleware('auth');
 Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
-
 
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -60,6 +60,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
    
 });
-
 
 require __DIR__.'/auth.php';
