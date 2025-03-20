@@ -12,16 +12,15 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\Admin\DashboardController;
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-       
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
 // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route::middleware(['admin'])->group(function () {
@@ -40,25 +39,28 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
 });
 
-Route::get('/', function () { return Inertia::render('Home'); })->name('home');
+Route::get('/', function () {
+    return Inertia::render('Home');
+})->name('home');
+
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order')->middleware('auth');
 Route::get('/CartModal', [CartController::class, 'index'])->name('cart');
 
-
+// Admin Routes (with middleware and prefix 'admin')
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('admin.users');
+    // Dashboard Route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard'); // List Products
-    Route::get('/products', [ProductController::class, 'index'])->name('admin.products'); // Add/Remove Products
-    Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders'); // Manage Orders
-    Route::get('/admin/products/edit/{id}', [ProductController::class, 'edit'])->name('admin.products.edit');
     
-});
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('admin.products');
-    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
-   
+    // Product Routes
+    Route::get('/products', [ProductController::class, 'index'])->name('admin.products'); // List Products
+    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create'); // Add Product
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit'); // Edit Product
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update'); // Update Product
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store'); // Store New Product
+    
+    // Order Routes
+    Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders'); // Manage Orders
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show'); // Show Order Details
 });
 
 require __DIR__.'/auth.php';

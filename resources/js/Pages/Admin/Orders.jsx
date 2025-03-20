@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import axios from 'axios';
-import { Link } from '@inertiajs/inertia-react';  // Use Inertia's Link component
+import { Link } from '@inertiajs/inertia-react';
 
-const Orders = () => {
-    const [orders, setOrders] = useState([]); // Ensures orders is an array
+const OrdersPage = () => {
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         fetchOrders();
@@ -13,11 +13,9 @@ const Orders = () => {
     const fetchOrders = async () => {
         try {
             const response = await axios.get('/api/orders');
-            console.log(response.data); // Inspect the data here
-            setOrders(Array.isArray(response.data) ? response.data : []);  // Ensure it's an array
+            setOrders(response.data);
         } catch (err) {
             console.error('Failed to fetch orders:', err);
-            setOrders([]);  // Fallback to an empty array if fetch fails
         }
     };
 
@@ -32,59 +30,55 @@ const Orders = () => {
         }
     };
 
-    const handleUpdate = async (id, finalised) => {
-        try {
-            await axios.put(`/api/orders/${id}`, { finalised });
-            setOrders(orders.map(order =>
-                order.id === id ? { ...order, finalised } : order
-            ));
-        } catch (err) {
-            console.error('Failed to update order:', err);
-        }
-    };
-
     return (
         <AdminLayout header={<h2 className="font-semibold text-xl text-gray-800">Manage Orders</h2>}>
             <div className="bg-white shadow-lg rounded-lg p-6">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Order List</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Order List</h2>
 
-                {Array.isArray(orders) && orders.length === 0 ? (
-                    <p className="text-gray-500">No orders available</p>
+                {orders.length === 0 ? (
+                    <p className="text-gray-500 text-center">No orders available</p>
                 ) : (
-                    Array.isArray(orders) && orders.length > 0 && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {orders.map((order) => (
-                                <div key={order.id} className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-                                    <h3 className="text-xl font-medium text-gray-800">Order #{order.id}</h3>
-                                    <p className="text-gray-600 mt-2">Total Price: ${order.totalPrice}</p>
-                                    <p className="text-gray-600 mt-2">Finalised: {order.finalised ? 'Yes' : 'No'}</p>
-
-                                    <div className="mt-4 flex justify-between">
-                                        <button
-                                            onClick={() => handleUpdate(order.id, !order.finalised)}
-                                            className="bg-blue-500 text-white p-2 rounded"
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {orders.map((order) => (
+                            <div
+                                key={order.id}
+                                className="flex flex-col items-center bg-white rounded-lg shadow-md p-4 border border-gray-200 transition-transform duration-300 hover:scale-105"
+                            >
+                                <h3 className="text-sm md:text-base font-semibold text-center bg-gray-800 text-white py-1 px-3 rounded">
+                                    Order #{order.id}
+                                </h3>
+                                <p className="text-xs text-gray-600 mt-2 h-12 overflow-hidden text-ellipsis text-wrap text-center">
+                                    {order.firstName} {order.lastName}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-2 text-center">
+                                    {order.finalised ? 'Completed' : 'Pending'}
+                                </p>
+                                <p className="text-xs text-gray-600 mt-2 text-center">
+                                    Total: {order.totalPrice} Ft
+                                </p>
+                                <div className="mt-auto flex flex-col items-center w-full">
+                                    <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
+                                        <Link
+                                            href={`/admin/orders/${order.id}`}
+                                            className="w-full bg-blue-500 text-white py-2 text-sm text-center rounded hover:bg-blue-600"
                                         >
-                                            {order.finalised ? 'Unfinalize' : 'Finalize'}
-                                        </button>
+                                            View
+                                        </Link>
                                         <button
                                             onClick={() => handleDelete(order.id)}
-                                            className="bg-red-500 text-white p-2 rounded-lg"
+                                            className="w-full bg-red-500 text-white py-2 text-sm rounded hover:bg-red-600"
                                         >
                                             Delete
                                         </button>
                                     </div>
-
-                                    <Link href={`/admin/orders/${order.id}/details`} className="mt-4 inline-block text-blue-500 underline">
-                                        View Order Details
-                                    </Link>
                                 </div>
-                            ))}
-                        </div>
-                    )
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
         </AdminLayout>
     );
 };
 
-export default Orders;
+export default OrdersPage;

@@ -17,6 +17,14 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->date('orderDate')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('totalPrice');
+            $table->integer('shippingMethod');
+            $table->integer('paymentMethod');
+            $table->string('shippingAddress');
+            $table->string('shippingCity');
+            $table->string('firstName');
+            $table->string('lastName');
+            $table->string('email');
+            $table->string('phone');
             $table->boolean('finalised')->default(false);
         });
     }

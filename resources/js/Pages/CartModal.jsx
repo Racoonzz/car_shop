@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import CheckoutPage from './CheckoutPage';
@@ -6,12 +6,14 @@ import CheckoutPage from './CheckoutPage';
 export default function CartModal({ cart, toggleCart, updateCart, products, deleteCart }) {
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
-  // Calculate the total price
+  // Calculate the total price (without decimals)
   const calculateTotal = useMemo(() => {
-    return cart.reduce(
-      (total, product) =>
-        total + (parseFloat(product.price) || 0) * (product.quantity || 1),
-      0
+    return Math.floor(
+      cart.reduce(
+        (total, product) =>
+          total + (parseFloat(product.price) || 0) * (product.quantity || 1),
+        0
+      )
     );
   }, [cart]);
 
@@ -40,17 +42,33 @@ export default function CartModal({ cart, toggleCart, updateCart, products, dele
     setCheckoutOpen(false);
   };
 
+  // Close modal when clicking outside
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        toggleCart(); // Close the cart modal
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [toggleCart]);
+
   return (
     <motion.div
       className="fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-sm flex justify-center items-start z-50"
-      onClick={toggleCart}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <motion.div
+        ref={modalRef} // Ref for detecting clicks outside
         className="bg-white p-6 rounded-lg shadow-xl w-96 relative top-10 transition-transform transform scale-100 ease-in-out duration-300"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
@@ -81,7 +99,7 @@ export default function CartModal({ cart, toggleCart, updateCart, products, dele
                     />
                     <div className="flex-grow">
                       <h3 className="text-lg font-medium text-gray-700">{product.name}</h3>
-                      <p className="text-gray-500">{product.price} Ft</p>
+                      <p className="text-gray-500">{Math.floor(product.price)} Ft</p> {/* Remove decimals */}
                       <p className="text-sm text-gray-500">Available: {maxQuantity}</p>
                     </div>
 
@@ -109,7 +127,7 @@ export default function CartModal({ cart, toggleCart, updateCart, products, dele
             </div>
 
             <div className="total mt-4 text-center">
-              <h3 className="text-lg font-medium text-gray-700">Total: {calculateTotal.toFixed(2)} Ft</h3>
+              <h3 className="text-lg font-medium text-gray-700">Total: {calculateTotal} Ft</h3> {/* Remove decimals */}
               <button
                 onClick={handleCheckout}
                 className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-md w-full hover:bg-blue-600 transition-all duration-150 transform active:scale-95"
@@ -127,8 +145,8 @@ export default function CartModal({ cart, toggleCart, updateCart, products, dele
         {isCheckoutOpen && (
           <CheckoutPage
             cart={cart}
-            toggleCheckout={handleCloseCheckout}
-            calculateTotal={calculateTotal}
+            closeCheckout={handleCloseCheckout}
+            total={calculateTotal}
             deleteCart={deleteCart}
           />
         )}
@@ -141,5 +159,6 @@ CartModal.propTypes = {
   cart: PropTypes.array.isRequired,
   toggleCart: PropTypes.func.isRequired,
   updateCart: PropTypes.func.isRequired,
-  products: PropTypes.array.isRequired, // Add products prop
+  products: PropTypes.array.isRequired,
+  deleteCart: PropTypes.func.isRequired,
 };
