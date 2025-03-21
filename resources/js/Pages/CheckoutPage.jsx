@@ -4,7 +4,6 @@ import axios from 'axios';
 export default function CheckoutPage({
   cart = [],
   closeCheckout = () => console.warn('closeCheckout function not provided'),
-  total = 0,
   deleteCart = () => console.warn('deleteCart function not provided'),
 }) {
   const [shippingInfo, setShippingInfo] = useState({
@@ -19,6 +18,11 @@ export default function CheckoutPage({
     paymentMethod: '1',
   });
 
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [showPopup, setShowPopup] = useState(false); // State for success popup
+
   const shippingOptions = [
     { label: 'Standard (3-5 business days)', value: '1', price: 1000 },
     { label: 'Express (1-2 business days)', value: '2', price: 2500 },
@@ -30,6 +34,26 @@ export default function CheckoutPage({
     { label: 'Bank Transfer', value: '2', fee: 500 },
     { label: 'Cash on Delivery', value: '3', fee: 500 },
   ];
+
+  // Function to calculate the total dynamically based on the cart and selected shipping and payment options
+  const calculateTotal = () => {
+    const selectedShipping = shippingOptions.find(option => option.value === shippingInfo.shippingMethod);
+    const selectedPayment = paymentOptions.find(option => option.value === shippingInfo.paymentMethod);
+
+    const shippingFee = selectedShipping ? selectedShipping.price : 0;
+    const paymentFee = selectedPayment ? selectedPayment.fee : 0;
+
+    // Calculate product total
+    const productTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+    // Final total calculation including shipping and payment fees
+    const finalTotal = productTotal + shippingFee + paymentFee;
+    setTotal(finalTotal);
+  };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [shippingInfo, cart]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,15 +78,30 @@ export default function CheckoutPage({
         lastName: shippingInfo.lastName,
         email: shippingInfo.email,
         phone: shippingInfo.phone,
+        totalPrice: total,
+      }, {
+        headers: {
+          'Authorization': undefined, // Make sure no auth headers are sent
+        },
       });
 
-      alert(response.data.message);
+
+
+
+      setAlertMessage(response.data.message);
+      setShowAlert(true);
       deleteCart();
       closeCheckout();
+
+      // Show the success popup
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 2000); // Hide the popup after 2 seconds
     } catch (error) {
-      console.error('Error placing order:', error.response?.data || error);
-      alert(`Error placing order: ${error.response?.data?.message || 'Unknown error'}`);
+      console.error('Error placing order:', error.response?.data);
+      setAlertMessage(`Error placing order: ${error.response?.data?.message || 'Unknown error'}`);
+      setShowAlert(true);
     }
+    
   };
 
   const modalRef = useRef(null);
@@ -84,6 +123,13 @@ export default function CheckoutPage({
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
       <div ref={modalRef} className="bg-white p-8 rounded-lg shadow-xl w-4/5 max-w-5xl h-[60%] overflow-y-auto">
         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Checkout</h2>
+
+        {showAlert && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white py-2 px-4 rounded-lg">
+            {alertMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -121,7 +167,9 @@ export default function CheckoutPage({
             <label className="block text-gray-700">Shipping Method</label>
             <select name="shippingMethod" value={shippingInfo.shippingMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
               {shippingOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label} - {option.price} Ft</option>
+                <option key={option.value} value={option.value}>
+                  {option.label} - {option.price} Ft
+                </option>
               ))}
             </select>
           </div>
@@ -129,7 +177,9 @@ export default function CheckoutPage({
             <label className="block text-gray-700">Payment Method</label>
             <select name="paymentMethod" value={shippingInfo.paymentMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
               {paymentOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label} {option.fee > 0 && `- ${option.fee} Ft`}</option>
+                <option key={option.value} value={option.value}>
+                  {option.label} {option.fee > 0 && `- ${option.fee} Ft`}
+                </option>
               ))}
             </select>
           </div>
@@ -142,6 +192,13 @@ export default function CheckoutPage({
           <p>Total: {Math.floor(total)} Ft</p>
         </div>
       </div>
+
+      {/* Success Popup */}
+      {showPopup && (
+        <div className="fixed bottom-10 right-10 bg-green-500 text-white p-3 rounded-lg shadow-lg opacity-90">
+          <span>Order successfully placed!</span>
+        </div>
+      )}
     </div>
   );
 }

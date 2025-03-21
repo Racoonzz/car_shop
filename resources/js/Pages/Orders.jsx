@@ -10,7 +10,6 @@ export default function Orders({orders}) {
                     {order.order_details.map(orderDetail => (
                         <p key={orderDetail.id}>{orderDetail.product.name}</p>
                     ))}
-                    
                 </div>
             ))}
             

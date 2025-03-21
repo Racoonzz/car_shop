@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import axios from 'axios';
-import { Link } from '@inertiajs/inertia-react';
+import { Link, usePage } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 
-const OrdersPage = () => {
-    const [orders, setOrders] = useState([]);
-
-    useEffect(() => {
-        fetchOrders();
-    }, []);
-
-    const fetchOrders = async () => {
-        try {
-            const response = await axios.get('/api/orders');
-            setOrders(response.data);
-        } catch (err) {
-            console.error('Failed to fetch orders:', err);
-        }
-    };
-
-    const handleDelete = async (id) => {
+const Orders = ({ orders }) => {
+    // Function to handle order deletion
+    const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this order?")) {
-            try {
-                await axios.delete(`/api/orders/${id}`);
-                setOrders(orders.filter(order => order.id !== id));
-            } catch (err) {
-                console.error('Failed to delete order:', err);
-            }
+            Inertia.delete(`/admin/orders/${id}`, {
+                onSuccess: () => {
+                    console.log(`Order ${id} deleted successfully`);
+                },
+                onError: (error) => {
+                    console.error('Failed to delete order:', error);
+                },
+            });
         }
     };
 
@@ -35,11 +23,11 @@ const OrdersPage = () => {
             <div className="bg-white shadow-lg rounded-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Order List</h2>
 
-                {orders.length === 0 ? (
+                {Array.isArray(orders) && orders.length === 0 ? (
                     <p className="text-gray-500 text-center">No orders available</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {orders.map((order) => (
+                        {Array.isArray(orders) && orders.map((order) => (
                             <div
                                 key={order.id}
                                 className="flex flex-col items-center bg-white rounded-lg shadow-md p-4 border border-gray-200 transition-transform duration-300 hover:scale-105"
@@ -81,4 +69,4 @@ const OrdersPage = () => {
     );
 };
 
-export default OrdersPage;
+export default Orders;

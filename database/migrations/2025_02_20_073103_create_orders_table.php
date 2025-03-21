@@ -14,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade'); // Allow null for guest orders
             $table->date('orderDate')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('totalPrice');
-            $table->integer('shippingMethod');
-            $table->integer('paymentMethod');
+            $table->foreignId('shipping_method_id')->constrained('shipping_methods')->onDelete('cascade'); // Foreign key to shipping_methods
+            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');   // Foreign key to payment_methods
             $table->string('shippingAddress');
             $table->string('shippingCity');
             $table->string('firstName');
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone');
             $table->boolean('finalised')->default(false);
+            $table->timestamps(); // Add created_at and updated_at columns
         });
     }
 
