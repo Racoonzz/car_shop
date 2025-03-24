@@ -9,13 +9,14 @@ class ShippingMethod extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'name',
-        'price',
+        'name', // Name of the shipping method
+        'price', // Price of the shipping method
     ];
+
+    // Relationship to the Order model
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

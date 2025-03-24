@@ -36,8 +36,8 @@ const OrderShow = ({ order }) => {
             <p><strong>Phone:</strong> {order.phone}</p>
             <p><strong>Shipping Address:</strong> {order.shippingAddress}</p>
             <p><strong>Shipping City:</strong> {order.shippingCity}</p>
-            <p><strong>Shipping Method:</strong> {shippingOptions[order.shippingMethod]}</p> {/* Dynamic Shipping Method */}
-            <p><strong>Payment Method:</strong> {paymentOptions[order.paymentMethod]}</p> {/* Dynamic Payment Method */}
+            <p><strong>Shipping Method:</strong> {shippingOptions[order.shippingMethod]}</p>
+            <p><strong>Payment Method:</strong> {paymentOptions[order.paymentMethod]}</p>
             <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleString('hu-HU')}</p>
             <p><strong>Order Status:</strong> {order.finalised === 1 ? 'Completed' : 'Pending'}</p>
           </div>

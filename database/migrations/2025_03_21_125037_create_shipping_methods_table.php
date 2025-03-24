@@ -14,15 +14,19 @@ return new class extends Migration
         Schema::create('shipping_methods', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // e.g., "Standard", "Express", "SameDay"
-            $table->integer('price'); // Price in cents or your currency unit
-            $table->timestamps();
+            $table->integer('price');
+            $table->timestamps(); // Adds created_at and updated_at columns
         });
     }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::dropIfExists('shipping_methods');
-    }
+{
+    DB::statement('PRAGMA foreign_keys=off;'); // Disable foreign key checks for SQLite
+    Schema::dropIfExists('shipping_methods');
+    DB::statement('PRAGMA foreign_keys=on;'); // Re-enable foreign key checks
+}
+
 };

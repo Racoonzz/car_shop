@@ -9,13 +9,14 @@ class PaymentMethod extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'name',
-        'fee',
+        'name', // Name of the payment method
+        'fee',  // Fee associated with the payment method
     ];
+
+    // Relationship to the Order model
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
