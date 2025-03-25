@@ -22,100 +22,52 @@ class OrderController extends Controller
         // Pass the orders to Inertia view
         return Inertia::render('Admin/Orders', [
             'orders' => $orders
-
         ]);
     }
-
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.productId' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'shippingMethod' => 'required|exists:shipping_methods,id',
-            'paymentMethod' => 'required|exists:payment_methods,id',
-            'shippingAddress' => 'required|string',
-            'shippingCity' => 'required|string',
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
-        ]);
-
-        // Log incoming request data for debugging
-        \Log::info('Order request data:', $request->all());
-
         DB::beginTransaction();
         try {
-            // Calculate the total price of products
-            $totalPrice = collect($request->items)->sum(function ($item) {
-                $product = Product::find($item['productId']);
-                if (!$product) {
-                    throw new \Exception('Product not found: ' . $item['productId']);
-                }
-                return $item['quantity'] * $product->price;
-            });
-
-            // Fetch shipping and payment methods from the database
-            $shippingMethod = DB::table('shipping_methods')->find($request->shippingMethod);
-            $paymentMethod = DB::table('payment_methods')->find($request->paymentMethod);
-
-            if (!$shippingMethod || !$paymentMethod) {
-                throw new \Exception('Invalid shipping or payment method');
-            }
-
-            // Get the shipping fee and payment fee
-            $shippingFee = $shippingMethod->price ?? 0;
-            $paymentFee = $paymentMethod->fee ?? 0;
-
-            // Calculate the final total price (products + shipping + payment)
-            $finalTotalPrice = $totalPrice + $shippingFee + $paymentFee;
-
-            // Check if the user is authenticated, otherwise handle as a guest
-            $userId = Auth::check() ? Auth::id() : null;
-
             // Create the order
             $order = Order::create([
-                'user_id' => $userId, // Store user_id as null if not authenticated
-                'totalPrice' => $finalTotalPrice,  // Store the final total price
-                'shipping_method_id' => $shippingMethod->id, // Store shipping method ID
-                'payment_method_id' => $paymentMethod->id,   // Store payment method ID
+                'user_id' => auth()->id(),
+                'shipping_method_id' => $request->shippingMethod,
+                'payment_method_id' => $request->paymentMethod,
                 'shippingAddress' => $request->shippingAddress,
                 'shippingCity' => $request->shippingCity,
                 'firstName' => $request->firstName,
                 'lastName' => $request->lastName,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'finalised' => false,
+                'totalPrice' => $request->totalPrice,
             ]);
 
-            // Create order details for each product
+            // Insert the order details
             foreach ($request->items as $item) {
-                $product = Product::find($item['productId']);
-                if (!$product) {
-                    throw new \Exception('Product not found: ' . $item['productId']);
-                }
-                OrderDetail::create([
-                    'orderId' => $order->id,
-                    'productId' => $product->id,
+                // Ensure the order_id is properly set
+                $order->details()->create([
+                    'product_id' => $item['productId'],
                     'quantity' => $item['quantity'],
-                    'price' => $product->price,
+                    'price' => $item['price'],
                 ]);
             }
 
             DB::commit();
-            return response()->json(['message' => 'Order placed successfully'], 201);
+            return response()->json([
+                'message' => 'Order placed successfully!',
+                'order' => $order,
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log the error for debugging
-            \Log::error('Order placement failed: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Error placing order: ' . $e->getMessage()], 500);
         }
     }
+
+
     /**
      * Display the specified resource.
      */
@@ -139,11 +91,6 @@ class OrderController extends Controller
             return response()->json(['message' => 'Shipping or Payment method not found'], 404);
         }
     }
-
-
-
-
-
 
     /**
      * Update the specified resource in storage.
@@ -170,15 +117,4 @@ class OrderController extends Controller
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully'], 200);
     }
-
-    public function shippingMethod()
-    {
-        return $this->belongsTo(ShippingMethod::class);
-    }
-
-    public function paymentMethod()
-    {
-        return $this->belongsTo(PaymentMethod::class);
-    }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,26 +11,14 @@ class Order extends Model
 {
     use HasFactory;
 
-    
-
-    protected $fillable = [
-        'user_id',
-        'orderDate',
-        'totalPrice',
-        'shipping_method_id',
-        'payment_method_id',
-        'shippingAddress',
-        'shippingCity',
-        'firstName',
-        'lastName',
-        'email',
-        'phone',
-        'finalised',
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
     }
 
     public function shippingMethod()
@@ -41,7 +31,21 @@ class Order extends Model
         return $this->belongsTo(PaymentMethod::class);
     }
 
-    public function orderDetails()
+    protected $fillable = [
+        'user_id',
+        'shipping_method_id',
+        'payment_method_id',
+        'shippingAddress',
+        'shippingCity',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'totalPrice'
+    ];
+
+    // Define the relationship to OrderDetail
+    public function details()
     {
         return $this->hasMany(OrderDetail::class);
     }

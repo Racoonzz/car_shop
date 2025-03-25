@@ -12,8 +12,7 @@ class OrderDetailController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        {
+    { {
             return OrderDetail::with('product')->get();
         }
     }
@@ -28,17 +27,17 @@ class OrderDetailController extends Controller
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-    
+
         $orderDetail = OrderDetail::create([
-            'orderId' => $request->order_id,
-            'productId' => $request->product_id,
+            'order_id' => $request->order_id,
+            'product_id' => $request->product_id,
             'quantity' => $request->quantity,
         ]);
-    
+
         return response()->json($orderDetail, 201);
     }
 
@@ -47,32 +46,33 @@ class OrderDetailController extends Controller
      */
     public function show($id)
     {
-      
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, orderDetail $orderDetails)
+    public function update(Request $request, OrderDetail $orderDetail)
     {
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id',
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        $orderDetails->update([
-            'orderId' => $request->order_id,
-            'productId' => $request->product_id,
+        $orderDetail->update([
+            'order_id' => $request->order_id,
+            'product_id' => $request->product_id,
             'quantity' => $request->quantity,
         ]);
 
-        return response()->json($orderDetails, 200); 
+        return response()->json($orderDetail, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.

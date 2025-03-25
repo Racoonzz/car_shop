@@ -65,8 +65,13 @@ export default function CheckoutPage({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const cartItems = cart.map((item) => ({ productId: item.id, quantity: item.quantity }));
-
+    
+    const cartItems = cart.map((item) => ({
+      productId: item.id,  // Make sure productId is included
+      quantity: item.quantity,
+      price: item.price,
+    }));
+  
     try {
       const response = await axios.post('/orders', {
         items: cartItems,
@@ -79,30 +84,26 @@ export default function CheckoutPage({
         email: shippingInfo.email,
         phone: shippingInfo.phone,
         totalPrice: total,
-      }, {
-        headers: {
-          'Authorization': undefined, // Make sure no auth headers are sent
-        },
       });
-
-
-
-
+  
       setAlertMessage(response.data.message);
       setShowAlert(true);
       deleteCart();
       closeCheckout();
-
-      // Show the success popup
+  
+      // Handle order confirmation response
+      const order = response.data.order;
+      console.log('Order placed successfully:', order);
+      
       setShowPopup(true);
-      setTimeout(() => setShowPopup(false), 2000); // Hide the popup after 2 seconds
+      setTimeout(() => setShowPopup(false), 2000);
     } catch (error) {
       console.error('Error placing order:', error.response?.data);
       setAlertMessage(`Error placing order: ${error.response?.data?.message || 'Unknown error'}`);
       setShowAlert(true);
     }
-    
   };
+  
 
   const modalRef = useRef(null);
 
