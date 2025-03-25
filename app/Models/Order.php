@@ -21,15 +21,24 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class);
     }
 
-    public function shippingMethod()
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($order) {
+            $order->orderDetails()->delete(); // Delete related order details
+        });
+    }
+
+    public function ShippingMethod()
     {
         return $this->belongsTo(ShippingMethod::class);
     }
 
-    public function paymentMethod()
+    public function PaymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
     }
+
 
     protected $fillable = [
         'user_id',

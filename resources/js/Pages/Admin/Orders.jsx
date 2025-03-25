@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Link, usePage } from '@inertiajs/inertia-react';
+import { Link } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 
 const Orders = ({ orders }) => {
-    // Function to handle order deletion
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this order?")) {
-            Inertia.delete(`/admin/orders/${id}`, {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const openModal = (order) => {
+        setSelectedOrder(order);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedOrder(null);
+    };
+
+    const handleDelete = () => {
+        if (selectedOrder) {
+            Inertia.delete(`/admin/orders/${selectedOrder.id}`, {
                 onSuccess: () => {
-                    console.log(`Order ${id} deleted successfully`);
+                    console.log(`Order ${selectedOrder.id} deleted successfully`);
+                    closeModal();
                 },
                 onError: (error) => {
                     console.error('Failed to delete order:', error);
@@ -44,6 +57,12 @@ const Orders = ({ orders }) => {
                                 <p className="text-xs text-gray-600 mt-2 text-center">
                                     Total: {order.totalPrice} Ft
                                 </p>
+                                <p className="text-xs text-gray-600 mt-2 text-center">
+                                    Shipping: {order.shippingMethod ? order.shippingMethod.name : 'N/A'}
+                                </p>
+                                <p className="text-xs text-gray-600 mt-2 text-center">
+                                    Payment: {order.paymentMethod ? order.paymentMethod.name : 'N/A'}
+                                </p>
                                 <div className="mt-auto flex flex-col items-center w-full">
                                     <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
                                         <Link
@@ -53,7 +72,7 @@ const Orders = ({ orders }) => {
                                             View
                                         </Link>
                                         <button
-                                            onClick={() => handleDelete(order.id)}
+                                            onClick={() => openModal(order)}
                                             className="w-full bg-red-500 text-white py-2 text-sm rounded hover:bg-red-600"
                                         >
                                             Delete
@@ -65,6 +84,20 @@ const Orders = ({ orders }) => {
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+                        <h3 className="text-lg font-semibold text-gray-800">Confirm Deletion</h3>
+                        <p className="text-gray-600 mt-2">Are you sure you want to delete Order #{selectedOrder?.id}?</p>
+                        <div className="mt-4 flex justify-center gap-4">
+                            <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Yes, Delete</button>
+                            <button onClick={closeModal} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AdminLayout>
     );
 };

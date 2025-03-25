@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
+import axios from 'axios';
 
 const OrderShow = ({ order }) => {
   // Helper function to format prices in HUF
@@ -7,18 +8,40 @@ const OrderShow = ({ order }) => {
     return `${price.toLocaleString('hu-HU')} Ft`;
   };
 
-  // Shipping options corresponding to the IDs
-  const shippingOptions = {
-    1: 'Standard Shipping (3-5 business days)',
-    2: 'Express Shipping (1-2 business days)',
-    3: 'SameDay Delivery',
-  };
+  const [orderStatus, setOrderStatus] = useState(order.finalised);  // Assuming order.finalised is 0 for Pending, 1 for Shipping
+  const [isPopupVisible, setPopupVisible] = useState(false); // State for popup visibility
+  const [popupMessage, setPopupMessage] = useState(''); // State for popup message
 
-  // Payment options corresponding to the IDs
-  const paymentOptions = {
-    1: 'Credit Card',
-    2: 'Bank Transfer',
-    3: 'Cash on Delivery',
+  const handleStatusChange = async () => {
+    try {
+      // Update the order status to 'Shipping' by setting finalised to 1
+      const response = await axios.put(`/admin/orders/${order.id}`, {
+        finalised: 1, // Set finalised to 1 (Shipping)
+      });
+
+      // Update the status in UI to reflect the change
+      setOrderStatus(1);  // Assuming you have a state to track the order status
+      
+      // Show the success popup
+      setPopupMessage('Order status updated to Shipping');
+      setPopupVisible(true);
+
+      // Hide the popup after 3 seconds
+      setTimeout(() => {
+        setPopupVisible(false);
+      }, 3000);
+    } catch (error) {
+      // Show the error popup
+      setPopupMessage('Error updating order status');
+      setPopupVisible(true);
+
+      // Hide the popup after 3 seconds
+      setTimeout(() => {
+        setPopupVisible(false);
+      }, 3000);
+
+      console.error(error);
+    }
   };
 
   return (
@@ -36,12 +59,24 @@ const OrderShow = ({ order }) => {
             <p><strong>Phone:</strong> {order.phone}</p>
             <p><strong>Shipping Address:</strong> {order.shippingAddress}</p>
             <p><strong>Shipping City:</strong> {order.shippingCity}</p>
-            <p><strong>Shipping Method:</strong> {shippingOptions[order.shippingMethod]}</p>
-            <p><strong>Payment Method:</strong> {paymentOptions[order.paymentMethod]}</p>
-            <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleString('hu-HU')}</p>
-            <p><strong>Order Status:</strong> {order.finalised === 1 ? 'Completed' : 'Pending'}</p>
+            <p><strong>Shipping Method:</strong> {order.shippingMethod || 'N/A'}</p>
+            <p><strong>Payment Method:</strong> {order.paymentMethod || 'N/A'}</p>
+            <p><strong>Order Date:</strong> {order.created_at ? new Date(order.created_at).toLocaleString('hu-HU') : 'Invalid Date'}</p>
+            <p><strong>Order Status:</strong> {orderStatus === 1 ? 'Shipping' : 'Pending'}</p>
           </div>
         </div>
+
+        {/* Button to change status (only if orderStatus is 0 - Pending) */}
+        {orderStatus === 0 && (
+          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+            <button
+              onClick={handleStatusChange}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            >
+              Mark as Shipping
+            </button>
+          </div>
+        )}
 
         {/* Order Items */}
         <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-4">
@@ -115,6 +150,13 @@ const OrderShow = ({ order }) => {
           <p className="text-xl font-bold">{formatPrice(order.totalPrice)}</p>
         </div>
       </div>
+
+      {/* Custom Popup Notification */}
+      {isPopupVisible && (
+        <div className="fixed bottom-10 right-10 bg-green-500 text-white p-3 rounded-lg shadow-lg opacity-90">
+          <span>{popupMessage}</span>
+        </div>
+      )}
     </AdminLayout>
   );
 };

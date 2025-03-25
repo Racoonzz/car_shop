@@ -18,6 +18,10 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->timestamps();
         });
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+        });
+        
 
     }
 

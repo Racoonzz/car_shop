@@ -16,7 +16,7 @@ Route::get('/user', function (Request $request) {
 // Orders routes
 Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
-
+Route::put('/orders/{id}', [OrderController::class, 'update']);
 Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
 // Order details routes

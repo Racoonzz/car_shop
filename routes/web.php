@@ -58,7 +58,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store'); // Store New Product
 
     // Admin Order Routes
+    Route::put('/orders/{id}', [OrderController::class, 'update']); // Update Order
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders'); // List Orders
+    Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show'); // View Order Details
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders.destroy'); // Delete Order
 });

@@ -19,11 +19,24 @@ class OrderController extends Controller
     {
         $orders = Order::with(['user', 'orderDetails.product', 'shippingMethod', 'paymentMethod'])->get();
 
-        // Pass the orders to Inertia view
+        // Format the order data to pass only relevant fields
+        $ordersFormatted = $orders->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'firstName' => $order->firstName,
+                'lastName' => $order->lastName,
+                'shippingMethod' => $order->shippingMethod ? $order->shippingMethod->name : 'N/A',
+                'paymentMethod' => $order->paymentMethod ? $order->paymentMethod->name : 'N/A',
+                'totalPrice' => $order->totalPrice,
+                // add other fields as necessary
+            ];
+        });
+
         return Inertia::render('Admin/Orders', [
-            'orders' => $orders
+            'orders' => $ordersFormatted
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -73,48 +86,93 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        // Use eager loading to fetch the relationships
         $order = Order::with(['user', 'orderDetails.product', 'shippingMethod', 'paymentMethod'])->find($id);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Check if the shipping and payment methods exist
-        if ($order->shippingMethod && $order->paymentMethod) {
-            return Inertia::render('Admin/OrderShow', [
-                'order' => $order
-            ]);
-        } else {
-            // Log the issue or return an error if methods are missing
-            \Log::error('Shipping or payment method not found for order', ['order_id' => $id]);
-            return response()->json(['message' => 'Shipping or Payment method not found'], 404);
-        }
+        // Format the order data to pass only relevant fields
+        $orderFormatted = [
+            'id' => $order->id,
+            'firstName' => $order->firstName,
+            'lastName' => $order->lastName,
+            'email' => $order->email,
+            'phone' => $order->phone,
+            'shippingAddress' => $order->shippingAddress,
+            'shippingCity' => $order->shippingCity,
+            'shippingMethod' => $order->shippingMethod ? $order->shippingMethod->name : 'N/A',
+            'paymentMethod' => $order->paymentMethod ? $order->paymentMethod->name : 'N/A',
+            'totalPrice' => $order->totalPrice,
+            'created_at' => $order->created_at->format('Y. m. d. H:i:s'), // Format the date
+            'finalised' => $order->finalised,
+            // Get the order details (products)
+            'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'id' => $detail->id,
+                    'product' => [
+                        'name' => $detail->product->name,
+                        'models' => $detail->product->models,
+                        'description' => $detail->product->description,
+                        'pictureUrl' => $detail->product->pictureUrl,
+                    ],
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                ];
+            }),
+        ];
+
+        return Inertia::render('Admin/OrderShow', [
+            'order' => $orderFormatted
+        ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
-    {
-        $request->validate([
-            'finalised' => 'required|boolean'
-        ]);
+    // OrderController.php
+    // OrderController.php
 
-        $order->update(['finalised' => $request->finalised]);
-        return response()->json($order);
+    public function update(Request $request, $id)
+    {
+        // Find the order by ID
+        $order = Order::findOrFail($id);
+
+        // Check if the 'finalised' field exists in the request and set it to 1 (Shipping)
+        if ($request->has('finalised')) {
+            $order->finalised = $request->input('finalised');
+            $order->save();
+
+            return response()->json(['message' => 'Order status updated to Shipping']);
+        }
+
+        return response()->json(['message' => 'Invalid request'], 400);
     }
+
+
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        $order = Order::find($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
+        try {
+            $order = Order::findOrFail($id);
+
+            // Delete related order details
+            $order->orderDetails()->delete();
+
+            // Now delete the order
+            $order->delete();
+
+            return redirect()->back()->with('success', 'Order deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete order: ' . $e->getMessage());
         }
-        $order->delete();
-        return response()->json(['message' => 'Order deleted successfully'], 200);
     }
+
+
 }
