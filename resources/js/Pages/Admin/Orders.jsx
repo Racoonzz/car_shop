@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Link } from '@inertiajs/inertia-react';
+// import { Link } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
+import { Link } from '@inertiajs/react';
+
 
 const Orders = ({ orders }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
