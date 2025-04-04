@@ -134,39 +134,39 @@ export default function CheckoutPage({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700">First Name</label>
-              <input type="text" name="firstName" value={shippingInfo.firstName} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+              <label htmlFor="firstName" className="block text-gray-700">First Name</label>
+              <input type="text" name="firstName" id='firstName' value={shippingInfo.firstName} onChange={handleChange} className="w-full p-2 border rounded-md" required />
             </div>
             <div>
-              <label className="block text-gray-700">Last Name</label>
-              <input type="text" name="lastName" value={shippingInfo.lastName} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+              <label htmlFor='lastName' className="block text-gray-700">Last Name</label>
+              <input type="text" name="lastName" id='lastName' value={shippingInfo.lastName} onChange={handleChange} className="w-full p-2 border rounded-md" required />
             </div>
           </div>
           <div>
-            <label className="block text-gray-700">Email</label>
-            <input type="email" name="email" value={shippingInfo.email} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+            <label htmlFor='email' className="block text-gray-700">Email</label>
+            <input type="email" name="email" id='email' value={shippingInfo.email} onChange={handleChange} className="w-full p-2 border rounded-md" required />
           </div>
           <div>
-            <label className="block text-gray-700">Address</label>
-            <input type="text" name="address" value={shippingInfo.address} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+            <label htmlFor='address' className="block text-gray-700">Address</label>
+            <input type="text" name="address" id='address' value={shippingInfo.address} onChange={handleChange} className="w-full p-2 border rounded-md" required />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700">City</label>
-              <input type="text" name="city" value={shippingInfo.city} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+              <label htmlFor='city' className="block text-gray-700">City</label>
+              <input type="text" name="city" id='city' value={shippingInfo.city} onChange={handleChange} className="w-full p-2 border rounded-md" required />
             </div>
             <div>
-              <label className="block text-gray-700">Postal Code</label>
-              <input type="text" name="postalCode" value={shippingInfo.postalCode} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+              <label htmlFor='postalCode' className="block text-gray-700">Postal Code</label>
+              <input type="text" name="postalCode" id='postalCode' bvalue={shippingInfo.postalCode} onChange={handleChange} className="w-full p-2 border rounded-md" required />
             </div>
           </div>
           <div>
-            <label className="block text-gray-700">Phone</label>
-            <input type="text" name="phone" value={shippingInfo.phone} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+            <label htmlFor='phone' className="block text-gray-700">Phone</label>
+            <input type="text" name="phone" id='phone' value={shippingInfo.phone} onChange={handleChange} className="w-full p-2 border rounded-md" required />
           </div>
           <div>
-            <label className="block text-gray-700">Shipping Method</label>
-            <select name="shippingMethod" value={shippingInfo.shippingMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
+            <label htmlFor="shippingMethod"className="block text-gray-700">Shipping Method</label>
+            <select name="shippingMethod" id="shippingMethod" value={shippingInfo.shippingMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
               {shippingOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label} - {option.price} Ft
@@ -175,8 +175,8 @@ export default function CheckoutPage({
             </select>
           </div>
           <div>
-            <label className="block text-gray-700">Payment Method</label>
-            <select name="paymentMethod" value={shippingInfo.paymentMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
+            <label htmlFor="paymentMethod" className="block text-gray-700">Payment Method</label>
+            <select name="paymentMethod" id="paymentMethod" value={shippingInfo.paymentMethod} onChange={handleChange} className="w-full p-2 border rounded-md">
               {paymentOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label} {option.fee > 0 && `- ${option.fee} Ft`}
