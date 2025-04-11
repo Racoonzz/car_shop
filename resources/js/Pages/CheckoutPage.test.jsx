@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import CheckoutPage from "./CheckoutPage";
-import { beforeEach } from "vitest";
+import { beforeEach, vitest } from "vitest";
 
 describe('CheckoutPage Component', () => {
+    const mockCloseCheckout = vitest.fn();
     beforeEach(() => {
         const cart = [
             {
@@ -28,7 +29,7 @@ describe('CheckoutPage Component', () => {
                 quantity: 2
             },
         ];
-        render(<CheckoutPage cart={cart}/>);
+        render(<CheckoutPage cart={cart} closeCheckout={mockCloseCheckout}/>);
     })
     test("initial state of CheckoutPage", () => {
         const inputFirstName = screen.getByRole("textbox", { name: /first name/i });
@@ -57,32 +58,35 @@ describe('CheckoutPage Component', () => {
         expect(total).toBeInTheDocument();
 
     });
-    // test("clicking back to cart button", () => {
-    //     const backToCart = screen.getByRole("button", { name: /back to cart/i });
-    //     expect(backToCart).toBeInTheDocument();
-    //     fireEvent.click(backToCart);
-    //     expect(backToCart).not.toBeInTheDocument();
+    test("clicking back to cart button", async () => {
+        const backToCart = screen.getByRole("button", 
+            { 
+                name: /back to cart/i,
+            });
+        expect(backToCart).toBeInTheDocument();
+        fireEvent.click(backToCart);
+        expect(mockCloseCheckout).toHaveBeenCalledTimes(1);
     });
 
-    // test("shipping mode change", () => {
-    //     const shippingMethod = screen.getByRole("combobox", { name: /shipping method/i });
-    //     expect(shippingMethod).toBeInTheDocument();
-    //     fireEvent.change(shippingMethod, { target: { value: "express" } });
-    //     expect(shippingMethod.value).toBe("express");
-    //     let total = screen.getByText( /total: 137500 ft/i );
-    //     expect(total).toBeInTheDocument();
-    // });
+    test("shipping mode change", () => {
+        const shippingMethod = screen.getByRole("combobox", { name: /shipping method/i });
+        expect(shippingMethod).toBeInTheDocument();
+        fireEvent.change(shippingMethod, { target: { value: "2" } });
+        expect(shippingMethod.value).toBe("2");
+        let total = screen.getByText( /total: 137500 Ft/i );
+        expect(total).toBeInTheDocument();
+    });
 
-    // test("payment mode change", () => {
-    //     const paymentMethod = screen.getByRole("combobox", { name: /payment method/i });
-    //     expect(paymentMethod).toBeInTheDocument();
-    //     fireEvent.change(paymentMethod, { target: { value: "bankTransfer" } });
-    //     expect(paymentMethod.value).toBe("bankTransfer");
-    //     let total = screen.getByText( /total: 136500 ft/i );
-    //     expect(total).toBeInTheDocument();
-    //     fireEvent.change(paymentMethod, { target: { value: "cashOnDelivery" } });
-    //     expect(paymentMethod.value).toBe("cashOnDelivery");
-    //     total = screen.getByText( /total: 136500 ft/i );
-    //     expect(total).toBeInTheDocument();
-    // });
-    
+    test("payment mode change", () => {
+        const paymentMethod = screen.getByRole("combobox", { name: /payment method/i });
+        expect(paymentMethod).toBeInTheDocument();
+        fireEvent.change(paymentMethod, { target: { value: "2" } });
+        expect(paymentMethod.value).toBe("2");
+        let total = screen.getByText( /total: 136500 Ft/i );
+        expect(total).toBeInTheDocument();
+        fireEvent.change(paymentMethod, { target: { value: "3" } });
+        expect(paymentMethod.value).toBe("3");
+        total = screen.getByText( /total: 136500 Ft/i );
+        expect(total).toBeInTheDocument();
+    });
+});
